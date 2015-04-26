@@ -73,9 +73,18 @@
     return location;
 }
 
-- (void)updateSelfCurrentCoordinates:(CLLocationCoordinate2D)coordinate {
+- (BOOL)needsUpdateSelfCurrentLocation {
+    NSDate *lastupdate = self.userSelf[@"location-timestamp"];
+    if (!lastupdate) return true;
+    NSTimeInterval interval = [[NSDate date] timeIntervalSinceDate:lastupdate];
+    return (interval > 3600);
+}
+
+- (void) updateSelfCurrentLocation:(CLLocation *)location {
+    CLLocationCoordinate2D coordinate = location.coordinate;
     self.userSelf[@"latitude"] = @(coordinate.latitude);
     self.userSelf[@"longitude"] = @(coordinate.longitude);
+    self.userSelf[@"location-timestamp"] = location.timestamp;
     [self.userSelf saveInBackground];
 }
 

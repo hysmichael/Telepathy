@@ -30,8 +30,9 @@
         self.locationManager.delegate = self;
         self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
         
-        rawCityStr = [NSString new];
-        rawTemperatureStr = [NSString new];
+        rawCityStr = @"Unknown";
+        rawTemperatureStr = @" -°";
+        [self updateCityTemperatureLabel];
     }
     return self;
 }
@@ -41,7 +42,7 @@
     [self updateDatetimeComponent];
     [self updateGeoCity];
     [self updateWeather];
-    [self updateDistance];
+    [self updateGeoLocationAndDistance];
 }
 
 - (void) updateDatetimeComponent {
@@ -88,7 +89,7 @@
         if (data) {
             CZWeatherCondition *current = (CZWeatherCondition *)data;
             self.view.weatherIconLabel.stringValue = [NSString stringWithFormat:@"%c", current.climaconCharacter];
-            rawTemperatureStr = [NSString stringWithFormat:@"  %.0f°", current.temperature.c];
+            rawTemperatureStr = [NSString stringWithFormat:@" %.0f°", current.temperature.c];
             [self updateCityTemperatureLabel];
         }
     }];
@@ -101,14 +102,22 @@
     [self.view.cityLabel setAttributedStringValue:cityTempStr];
 }
 
-- (void) updateDistance {
-    [self.locationManager startUpdatingLocation];
+- (void) updateGeoLocationAndDistance {
+    if ([[DataManager sharedManager] needsUpdateSelfCurrentLocation]) {
+        [self.locationManager startUpdatingLocation];
+    } else {
+        [self updateDistanceLabel];
+    }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     CLLocation *location = [locations lastObject];
-    [[DataManager sharedManager] updateSelfCurrentCoordinates:location.coordinate];
+    [[DataManager sharedManager] updateSelfCurrentLocation:location];
     [manager stopUpdatingLocation];
+    [self updateDistanceLabel];
+}
+
+- (void) updateDistanceLabel {
     CLLocationDistance distance = [[DataManager sharedManager] distanceBetween];
     self.view.distanceLabel.stringValue = [NSString stringWithFormat:@"%.0f km", distance / 1000];
 }

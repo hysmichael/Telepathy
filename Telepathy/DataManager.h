@@ -26,7 +26,8 @@
 - (BOOL) isPartnerActive;
 
 - (CLLocation *) getPartnerLocation: (void(^)(CLPlacemark *)) callback;
-- (void) updateSelfCurrentCoordinates:(CLLocationCoordinate2D) coordinate;
+- (BOOL) needsUpdateSelfCurrentLocation;
+- (void) updateSelfCurrentLocation:(CLLocation *)location;
 - (CLLocationDistance) distanceBetween;
 
 @end

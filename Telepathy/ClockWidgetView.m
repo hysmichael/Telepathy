@@ -31,7 +31,6 @@
         [self.cityLabel setFont:[NSFont TPFontWithSize:16.0]];
         [self.cityLabel setTextColor:[TPColor defaultBlack]];
         [self addSubview:self.cityLabel];
-        self.cityLabel.stringValue = @"Unknown City -°";
         
         self.distanceLabel = [[[NSTextField alloc] initWithFrame:NSMakeRect(129.0, 10.0, 100.0, 10.0)] convertToTPLabel];
         [self.distanceLabel setFont:[NSFont TPFontWithSize:10.0]];
