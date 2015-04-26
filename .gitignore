@@ -2,5 +2,6 @@ logo/*
 parse-osx-library/*
 Pods/*
 design/*
-
+Telepathy.xcworkspace/xcshareddata/
+Telepathy.xcworkspace/xcuserdata/michael.xcuserdatad/xcdebugger/
 

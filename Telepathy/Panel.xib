@@ -730,7 +730,7 @@
 					<string key="superclassName">NSView</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">../Telepathy/BackgroundView.h</string>
+						<string key="minorKey">Telepathy/BackgroundView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -738,7 +738,7 @@
 					<string key="superclassName">NSPanel</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">../Telepathy/Panel.h</string>
+						<string key="minorKey">Telepathy/Panel.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -799,7 +799,7 @@
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">../Telepathy/PanelController.h</string>
+						<string key="minorKey">Telepathy/PanelController.h</string>
 					</object>
 				</object>
 			</array>

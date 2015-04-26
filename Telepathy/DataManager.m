@@ -7,6 +7,7 @@
 //
 
 #import "DataManager.h"
+#import <CoreLocation/CoreLocation.h>
 
 #define NULL_OBJ [NSNull null]
 
@@ -22,10 +23,6 @@
 }
 
 - (void)prepareUserData:(void (^)(int))callback {
-    if (self.userSelf && self.userPartner) {
-        callback(STATUS_UserDataAllReady);
-        return;
-    }
     self.userSelf = [PFUser currentUser];
     NSString *partnerID = self.userSelf[@"partnerId"];
     if ([partnerID isEqualTo:NULL_OBJ]) {
@@ -62,6 +59,30 @@
 
 - (BOOL)isPartnerActive {
     return [self.userPartner[@"isActive"] boolValue];
+}
+
+- (CLLocation *)getPartnerLocation:(void (^)(CLPlacemark *))callback {
+    CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:[self.userPartner[@"latitude"] doubleValue] longitude:[self.userPartner[@"longitude"] floatValue]];
+    [geoCoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
+        if (!error) {
+            CLPlacemark *placemark = [placemarks firstObject];
+            callback(placemark);
+        }
+    }];
+    return location;
+}
+
+- (void)updateSelfCurrentCoordinates:(CLLocationCoordinate2D)coordinate {
+    self.userSelf[@"latitude"] = @(coordinate.latitude);
+    self.userSelf[@"longitude"] = @(coordinate.longitude);
+    [self.userSelf saveInBackground];
+}
+
+- (CLLocationDistance)distanceBetween {
+    CLLocation *selfLocation = [[CLLocation alloc] initWithLatitude:[self.userSelf[@"latitude"] doubleValue] longitude:[self.userSelf[@"longitude"] floatValue]];
+    CLLocation *partnerLocation = [[CLLocation alloc] initWithLatitude:[self.userPartner[@"latitude"] doubleValue] longitude:[self.userPartner[@"longitude"] floatValue]];
+    return [selfLocation distanceFromLocation:partnerLocation];
 }
 
 @end

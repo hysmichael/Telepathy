@@ -25,4 +25,8 @@
 - (void) getPartnerProfileImage: (void(^)(NSImage *)) callback;
 - (BOOL) isPartnerActive;
 
+- (CLLocation *) getPartnerLocation: (void(^)(CLPlacemark *)) callback;
+- (void) updateSelfCurrentCoordinates:(CLLocationCoordinate2D) coordinate;
+- (CLLocationDistance) distanceBetween;
+
 @end

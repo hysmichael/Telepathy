@@ -36,4 +36,12 @@
     return [self colorWithHex:@"9CE255" alpha:1.0];
 }
 
++ (NSColor *)defaultBlack {
+    return [self colorWithHex:@"4A4A4A" alpha:1.0];
+}
+
++ (NSColor *)darkGray {
+    return [self colorWithHex:@"857889" alpha:1.0];
+}
+
 @end

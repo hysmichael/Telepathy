@@ -18,9 +18,26 @@
         [self.profileImageView setBoarderRadius:40.0 color:[NSColor grayColor] width:2.0];
         [self addSubview:self.profileImageView];
         
-        self.timeLabel = [[[NSTextField alloc] initWithFrame:NSMakeRect(100.0, 45.0, 160.0, 23.0)] convertToTPLabel];
-        [self.timeLabel setFont:[NSFont TPFontWithSize:18.0]];
+        self.timeLabel = [[[NSTextField alloc] initWithFrame:NSMakeRect(100.0, 48.0, 158.0, 20.0)] convertToTPLabel];
+        [self.timeLabel setTextColor:[TPColor defaultBlack]];
         [self addSubview:self.timeLabel];
+        
+        self.weatherIconLabel = [[[NSTextField alloc] initWithFrame:NSMakeRect(100.0, 10.0, 25.0, 28.0)] convertToTPLabel];
+        [self.weatherIconLabel setFont:[NSFont fontWithName:@"Climacons-Font" size:25.0]];
+        [self.weatherIconLabel setAlignment:NSCenterTextAlignment];
+        [self addSubview:self.weatherIconLabel];
+        
+        self.cityLabel = [[[NSTextField alloc] initWithFrame:NSMakeRect(128.0, 20.0, 134.0, 20.0)] convertToTPLabel];
+        [self.cityLabel setFont:[NSFont TPFontWithSize:16.0]];
+        [self.cityLabel setTextColor:[TPColor defaultBlack]];
+        [self addSubview:self.cityLabel];
+        self.cityLabel.stringValue = @"Unknown City -°";
+        
+        self.distanceLabel = [[[NSTextField alloc] initWithFrame:NSMakeRect(129.0, 10.0, 100.0, 10.0)] convertToTPLabel];
+        [self.distanceLabel setFont:[NSFont TPFontWithSize:10.0]];
+        [self.distanceLabel setTextColor:[TPColor defaultBlack]];
+        [self addSubview:self.distanceLabel];
+        self.distanceLabel.stringValue = @"- km";
     }
     return self;
 }

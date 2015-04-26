@@ -13,4 +13,9 @@
 @property (nonatomic, retain) NSImageView *profileImageView;
 @property (nonatomic, retain) NSTextField *timeLabel;
 
+@property (nonatomic, retain) NSTextField *weatherIconLabel;
+@property (nonatomic, retain) NSTextField *cityLabel;
+
+@property (nonatomic, retain) NSTextField *distanceLabel;
+
 @end

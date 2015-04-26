@@ -11,5 +11,7 @@
 @interface TPColor : NSObject
 
 + (NSColor *) green;
++ (NSColor *) defaultBlack;
++ (NSColor *) darkGray;
 
 @end
