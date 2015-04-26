@@ -1,0 +1,10 @@
+PODS:
+  - CZWeatherKit (1.0.0)
+
+DEPENDENCIES:
+  - CZWeatherKit
+
+SPEC CHECKSUMS:
+  CZWeatherKit: 178157f722d93e68169699bde6d5d9b372aa23d3
+
+COCOAPODS: 0.36.0
