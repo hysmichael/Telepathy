@@ -7,6 +7,7 @@
 #import "MenubarController.h"
 
 #import "ClockWidgetController.h"
+#import "AnniversaryController.h"
 
 #define OPEN_DURATION .15
 #define CLOSE_DURATION .1
@@ -19,6 +20,7 @@
 @interface PanelController()
 
 @property (nonatomic, retain) ClockWidgetController *clockWidget;
+@property (nonatomic, retain) AnniversaryController *anniversaryWidget;
 
 @end
 
@@ -75,6 +77,8 @@
 - (void) setupMainUserInterface {
     self.clockWidget = [[ClockWidgetController alloc] initWithViewFrame:NSMakeRect(20.0, 390.0, 260.0, 80.0)
                                                              parentView:self.mainInterfaceContainerView];
+    self.anniversaryWidget = [[AnniversaryController alloc] initWithViewFrame:NSMakeRect(20.0, 20.0, 260.0, 30.0)
+                                                                   parentView:self.mainInterfaceContainerView];
     
 }
 
@@ -291,6 +295,7 @@
         [[DataManager sharedManager] prepareUserData:^(int status) {
             if (status == STATUS_UserDataAllReady) {
                 [self.clockWidget updateClockWidget];
+                [self.anniversaryWidget updateAnniversaryWidget];
             }
         }];
     } else {

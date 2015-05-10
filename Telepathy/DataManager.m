@@ -33,10 +33,36 @@
     [query getObjectInBackgroundWithId:partnerID block:^(PFObject *object, NSError *error) {
         if (object) {
             self.userPartner = (PFUser *)object;
+            [self setActiveStatus:true callback:nil];
             callback(STATUS_UserDataAllReady);
         } else {
             callback(STATUS_OtherError);
         }
+    }];
+}
+
+- (void)setActiveStatus:(BOOL)isActive callback:(void (^)(BOOL))callback {    
+    // avoid multiple firing
+    if ([self.userSelf[@"isActive"] boolValue] == isActive) return;
+    
+    NSMutableArray *updateQueue = [[NSMutableArray alloc] initWithObjects:self.userSelf, nil];
+    self.userSelf[@"isActive"] = @(isActive);
+    if (isActive) {
+        // setup a new active session
+        self.activeSession = [PFObject objectWithClassName:@"UserActiveSession"];
+        self.activeSession[@"user"]      = self.userSelf;
+        self.activeSession[@"startTime"] = [NSDate date];
+        [updateQueue addObject:self.activeSession];
+    } else if (self.activeSession) {
+        // close up the current active session
+        NSDate *endTime = [NSDate date];
+        self.activeSession[@"endTime"]  = endTime;
+        self.activeSession[@"duration"] = @([endTime timeIntervalSinceDate:self.activeSession[@"startTime"]]);
+        [updateQueue addObject:self.activeSession];
+    }
+    [PFObject saveAllInBackground:updateQueue block: ^(BOOL succeeded, NSError *error){
+        if (callback) callback(succeeded);
+        if (!isActive) self.activeSession = nil;
     }];
 }
 
@@ -74,7 +100,7 @@
 }
 
 - (BOOL)needsUpdateSelfCurrentLocation {
-    NSDate *lastupdate = self.userSelf[@"location-timestamp"];
+    NSDate *lastupdate = self.userSelf[@"geoTimestamp"];
     if (!lastupdate) return true;
     NSTimeInterval interval = [[NSDate date] timeIntervalSinceDate:lastupdate];
     return (interval > 3600);
@@ -84,7 +110,7 @@
     CLLocationCoordinate2D coordinate = location.coordinate;
     self.userSelf[@"latitude"] = @(coordinate.latitude);
     self.userSelf[@"longitude"] = @(coordinate.longitude);
-    self.userSelf[@"location-timestamp"] = location.timestamp;
+    self.userSelf[@"geoTimestamp"] = location.timestamp;
     [self.userSelf saveInBackground];
 }
 
@@ -92,6 +118,16 @@
     CLLocation *selfLocation = [[CLLocation alloc] initWithLatitude:[self.userSelf[@"latitude"] doubleValue] longitude:[self.userSelf[@"longitude"] floatValue]];
     CLLocation *partnerLocation = [[CLLocation alloc] initWithLatitude:[self.userPartner[@"latitude"] doubleValue] longitude:[self.userPartner[@"longitude"] floatValue]];
     return [selfLocation distanceFromLocation:partnerLocation];
+}
+
+- (void)getAllAnniversaries:(void (^)(NSArray *))callback {
+    PFQuery *query = [PFQuery queryWithClassName:@"Anniversary"];
+    [query whereKey:@"userId" containedIn:@[self.userSelf.objectId, self.userPartner.objectId]];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            callback(objects);
+        }
+    }];
 }
 
 @end

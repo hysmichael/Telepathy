@@ -49,17 +49,25 @@ void *kContextActivePanel = &kContextActivePanel;
     
     // Install icon into the menu bar
     self.menubarController = [[MenubarController alloc] init];
-    [self.panelController readData];
     
     // open panel at launch
     [self togglePanel:self];
 }
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
-    // Explicitly remove the icon from the menu bar
-    [self.panelController writeData];
-    self.menubarController = nil;
-    return NSTerminateNow;
+    if (![PFUser currentUser])
+        return NSTerminateNow;
+    
+    [[DataManager sharedManager] setActiveStatus:false callback:^(BOOL status){
+        if (status) {
+            // Explicitly remove the icon from the menu bar
+            self.menubarController = nil;
+            [[NSApplication sharedApplication] replyToApplicationShouldTerminate:true];
+        } else {
+            [[NSApplication sharedApplication] replyToApplicationShouldTerminate:false];
+        }
+    }];
+    return NSTerminateLater;
 }
 
 #pragma mark - Actions
@@ -83,6 +91,31 @@ void *kContextActivePanel = &kContextActivePanel;
 
 - (StatusItemView *)statusItemViewForPanelController:(PanelController *)controller {
     return self.menubarController.statusItemView;
+}
+
+#pragma mark - System Notifications
+- (void) receiveSleepNote: (NSNotification*) note
+{
+    NSLog(@"receiveSleepNote: %@", [note name]);
+}
+
+- (void) receiveWakeNote: (NSNotification*) note
+{
+    NSLog(@"receiveWakeNote: %@", [note name]);
+}
+
+- (void) fileNotifications
+{
+    //These notifications are filed on NSWorkspace's notification center, not the default
+    // notification center. You will not receive sleep/wake notifications if you file
+    //with the default notification center.
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver: self
+                                                           selector: @selector(receiveSleepNote:)
+                                                               name: NSWorkspaceWillSleepNotification object: NULL];
+    
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver: self
+                                                           selector: @selector(receiveWakeNote:)
+                                                               name: NSWorkspaceDidWakeNotification object: NULL];
 }
 
 

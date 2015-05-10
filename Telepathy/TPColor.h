@@ -10,8 +10,12 @@
 
 @interface TPColor : NSObject
 
-+ (NSColor *) green;
-+ (NSColor *) defaultBlack;
-+ (NSColor *) darkGray;
++ (NSColor *) defaultBlack;         // 4A4A4A
++ (NSColor *) darkGray;             // 6B6565
++ (NSColor *) mediumGray;           // 857889
+
++ (NSColor *) green;                        // 9CE255
++ (NSColor *) lightMint:(CGFloat)alpha;     // 95F1D6
++ (NSColor *) darkMint;                     // 7CD5C0
 
 @end

@@ -19,6 +19,8 @@
 		4C00AC701AE84F6B00A5AB49 /* Panel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00AC6F1AE84F6B00A5AB49 /* Panel.m */; };
 		4C00AC721AE84FB900A5AB49 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C00AC711AE84FB900A5AB49 /* MainMenu.xib */; };
 		4C00AC751AE850C900A5AB49 /* BackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00AC741AE850C900A5AB49 /* BackgroundView.m */; };
+		4C4044441AFFE3C400E4D34B /* AnniversaryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4044431AFFE3C400E4D34B /* AnniversaryView.m */; };
+		4C4044471AFFE3D500E4D34B /* AnniversaryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4044461AFFE3D500E4D34B /* AnniversaryController.m */; };
 		4C4327221AE85F8500500AD3 /* Status.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C43271E1AE85F8500500AD3 /* Status.png */; };
 		4C4327231AE85F8500500AD3 /* Status@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C43271F1AE85F8500500AD3 /* Status@2x.png */; };
 		4C4327241AE85F8500500AD3 /* StatusHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C4327201AE85F8500500AD3 /* StatusHighlighted.png */; };
@@ -89,6 +91,10 @@
 		4C00AC731AE850C900A5AB49 /* BackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundView.h; sourceTree = "<group>"; };
 		4C00AC741AE850C900A5AB49 /* BackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundView.m; sourceTree = "<group>"; };
 		4C00AC871AE85AB500A5AB49 /* NSFileManagerExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSFileManagerExtension.h; sourceTree = "<group>"; };
+		4C4044421AFFE3C400E4D34B /* AnniversaryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnniversaryView.h; sourceTree = "<group>"; };
+		4C4044431AFFE3C400E4D34B /* AnniversaryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnniversaryView.m; sourceTree = "<group>"; };
+		4C4044451AFFE3D500E4D34B /* AnniversaryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnniversaryController.h; sourceTree = "<group>"; };
+		4C4044461AFFE3D500E4D34B /* AnniversaryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnniversaryController.m; sourceTree = "<group>"; };
 		4C43271E1AE85F8500500AD3 /* Status.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Status.png; sourceTree = "<group>"; };
 		4C43271F1AE85F8500500AD3 /* Status@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Status@2x.png"; sourceTree = "<group>"; };
 		4C4327201AE85F8500500AD3 /* StatusHighlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = StatusHighlighted.png; sourceTree = "<group>"; };
@@ -251,8 +257,8 @@
 		4C455D3C1AE84770002E9A96 /* Telepathy */ = {
 			isa = PBXGroup;
 			children = (
-				4CFB27E11AEC54D600F9E28C /* Modules */,
 				4C00AC8A1AE85B3900A5AB49 /* System */,
+				4CFB27E11AEC54D600F9E28C /* Modules */,
 				4C00AC891AE85B2900A5AB49 /* Views */,
 				4C00AC8B1AE85B4600A5AB49 /* Utility */,
 				4CFB27F11AEC648B00F9E28C /* Model */,
@@ -281,6 +287,10 @@
 				4CFB27E31AEC559B00F9E28C /* ClockWidgetView.m */,
 				4CFB27E51AEC55AD00F9E28C /* ClockWidgetController.h */,
 				4CFB27E61AEC55AD00F9E28C /* ClockWidgetController.m */,
+				4C4044421AFFE3C400E4D34B /* AnniversaryView.h */,
+				4C4044431AFFE3C400E4D34B /* AnniversaryView.m */,
+				4C4044451AFFE3D500E4D34B /* AnniversaryController.h */,
+				4C4044461AFFE3D500E4D34B /* AnniversaryController.m */,
 			);
 			name = Modules;
 			sourceTree = "<group>";
@@ -445,7 +455,9 @@
 			files = (
 				4C00AC751AE850C900A5AB49 /* BackgroundView.m in Sources */,
 				4CFB27F01AEC648700F9E28C /* DataManager.m in Sources */,
+				4C4044471AFFE3D500E4D34B /* AnniversaryController.m in Sources */,
 				4CFB27ED1AEC5C7500F9E28C /* Extension.m in Sources */,
+				4C4044441AFFE3C400E4D34B /* AnniversaryView.m in Sources */,
 				4CFB27EA1AEC580900F9E28C /* TPColor.m in Sources */,
 				4C00AC701AE84F6B00A5AB49 /* Panel.m in Sources */,
 				4C00AC611AE8484F00A5AB49 /* PanelController.m in Sources */,

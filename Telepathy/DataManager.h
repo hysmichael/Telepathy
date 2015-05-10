@@ -17,17 +17,27 @@
 @property PFUser *userSelf;
 @property PFUser *userPartner;
 
+@property PFObject *activeSession;
+
 + (id) sharedManager;
 
 - (void) prepareUserData: (void(^)(int)) callback;
 
-- (NSDate *) convertDateFromSelfTimezoneToPartnerTimezone: (NSDate *) date;
-- (void) getPartnerProfileImage: (void(^)(NSImage *)) callback;
+// USER STATUS
+- (void) setActiveStatus:(BOOL)isActive callback:(void(^)(BOOL)) callback;
 - (BOOL) isPartnerActive;
 
+// USER IMAGE / TIMEZONE
+- (NSDate *) convertDateFromSelfTimezoneToPartnerTimezone: (NSDate *) date;
+- (void) getPartnerProfileImage: (void(^)(NSImage *)) callback;
+
+// USER GEO LOCATION
 - (CLLocation *) getPartnerLocation: (void(^)(CLPlacemark *)) callback;
 - (BOOL) needsUpdateSelfCurrentLocation;
 - (void) updateSelfCurrentLocation:(CLLocation *)location;
 - (CLLocationDistance) distanceBetween;
+
+// ANNIVERSARIES
+- (void) getAllAnniversaries: (void(^)(NSArray *)) callback;
 
 @end

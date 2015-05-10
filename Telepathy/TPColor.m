@@ -41,7 +41,20 @@
 }
 
 + (NSColor *)darkGray {
+    return [self colorWithHex:@"6B6565" alpha:1.0];
+}
+
++ (NSColor *)mediumGray {
     return [self colorWithHex:@"857889" alpha:1.0];
+}
+
+
++ (NSColor *)lightMint:(CGFloat)alpha {
+    return [self colorWithHex:@"95F1D6" alpha:alpha];
+}
+
++ (NSColor *)darkMint {
+    return [self colorWithHex:@"7CD5C0" alpha:1.0];
 }
 
 @end

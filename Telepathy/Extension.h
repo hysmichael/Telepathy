@@ -28,3 +28,9 @@
 - (void) setBoarderRadius:(CGFloat)radius color:(NSColor *)color width:(CGFloat)width;
 
 @end
+
+@interface NSDate (TPDate)
+
++ (NSInteger)daysFromDate:(NSDate*)fromDateTime toDate:(NSDate*)toDateTime;
+
+@end

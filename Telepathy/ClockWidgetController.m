@@ -97,7 +97,7 @@
 
 - (void) updateCityTemperatureLabel {
     NSMutableAttributedString *cityTempStr = [[NSMutableAttributedString alloc] initWithString:rawCityStr attributes:@{NSForegroundColorAttributeName: [TPColor defaultBlack]}];
-    NSAttributedString *atrTempStr = [[NSAttributedString alloc] initWithString:rawTemperatureStr attributes:@{NSForegroundColorAttributeName: [TPColor darkGray]}];
+    NSAttributedString *atrTempStr = [[NSAttributedString alloc] initWithString:rawTemperatureStr attributes:@{NSForegroundColorAttributeName: [TPColor mediumGray]}];
     [cityTempStr appendAttributedString:atrTempStr];
     [self.view.cityLabel setAttributedStringValue:cityTempStr];
 }
