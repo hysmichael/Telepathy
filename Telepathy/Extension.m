@@ -57,6 +57,12 @@
     self.layer.masksToBounds = true;
 }
 
+- (void)strokeLineFromPoint:(NSPoint)point length:(CGFloat)length width:(CGFloat)width color:(NSColor *)color {
+    NSView *lineView = [[NSView alloc] initWithFrame:NSMakeRect(point.x, point.y - width / 2, length, width)];
+    [lineView setBackgroundColor:color];
+    [self addSubview:lineView];
+}
+
 @end
 
 @implementation NSDate (TPDate)

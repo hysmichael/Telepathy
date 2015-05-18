@@ -45,6 +45,15 @@
 		4CFB27EA1AEC580900F9E28C /* TPColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFB27E91AEC580900F9E28C /* TPColor.m */; };
 		4CFB27ED1AEC5C7500F9E28C /* Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFB27EC1AEC5C7500F9E28C /* Extension.m */; };
 		4CFB27F01AEC648700F9E28C /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFB27EF1AEC648700F9E28C /* DataManager.m */; };
+		4CFFE1151B093E38000EEAD4 /* BubbleScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE1141B093E38000EEAD4 /* BubbleScrollView.m */; };
+		4CFFE1181B093E47000EEAD4 /* MessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE1171B093E47000EEAD4 /* MessageController.m */; };
+		4CFFE11B1B0942E5000EEAD4 /* MessageBubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE11A1B0942E5000EEAD4 /* MessageBubbleView.m */; };
+		4CFFE1211B095DC7000EEAD4 /* TPFlippedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE1201B095DC7000EEAD4 /* TPFlippedView.m */; };
+		4CFFE1241B09610D000EEAD4 /* TPScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE1231B09610D000EEAD4 /* TPScrollView.m */; };
+		4CFFE1271B0962A1000EEAD4 /* BubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE1261B0962A1000EEAD4 /* BubbleView.m */; };
+		4CFFE12A1B0962BF000EEAD4 /* EventBubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE1291B0962BF000EEAD4 /* EventBubbleView.m */; };
+		4CFFE12D1B0962D0000EEAD4 /* EventWidgetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE12C1B0962D0000EEAD4 /* EventWidgetController.m */; };
+		4CFFE1301B0969E6000EEAD4 /* TPTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE12F1B0969E6000EEAD4 /* TPTextField.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +135,24 @@
 		4CFB27EC1AEC5C7500F9E28C /* Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Extension.m; sourceTree = "<group>"; };
 		4CFB27EE1AEC648700F9E28C /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
 		4CFB27EF1AEC648700F9E28C /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
+		4CFFE1131B093E38000EEAD4 /* BubbleScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BubbleScrollView.h; sourceTree = "<group>"; };
+		4CFFE1141B093E38000EEAD4 /* BubbleScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BubbleScrollView.m; sourceTree = "<group>"; };
+		4CFFE1161B093E47000EEAD4 /* MessageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageController.h; sourceTree = "<group>"; };
+		4CFFE1171B093E47000EEAD4 /* MessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageController.m; sourceTree = "<group>"; };
+		4CFFE1191B0942E5000EEAD4 /* MessageBubbleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageBubbleView.h; sourceTree = "<group>"; };
+		4CFFE11A1B0942E5000EEAD4 /* MessageBubbleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageBubbleView.m; sourceTree = "<group>"; };
+		4CFFE11F1B095DC7000EEAD4 /* TPFlippedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPFlippedView.h; sourceTree = "<group>"; };
+		4CFFE1201B095DC7000EEAD4 /* TPFlippedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPFlippedView.m; sourceTree = "<group>"; };
+		4CFFE1221B09610D000EEAD4 /* TPScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPScrollView.h; sourceTree = "<group>"; };
+		4CFFE1231B09610D000EEAD4 /* TPScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPScrollView.m; sourceTree = "<group>"; };
+		4CFFE1251B0962A1000EEAD4 /* BubbleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BubbleView.h; sourceTree = "<group>"; };
+		4CFFE1261B0962A1000EEAD4 /* BubbleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BubbleView.m; sourceTree = "<group>"; };
+		4CFFE1281B0962BF000EEAD4 /* EventBubbleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventBubbleView.h; sourceTree = "<group>"; };
+		4CFFE1291B0962BF000EEAD4 /* EventBubbleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventBubbleView.m; sourceTree = "<group>"; };
+		4CFFE12B1B0962D0000EEAD4 /* EventWidgetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventWidgetController.h; sourceTree = "<group>"; };
+		4CFFE12C1B0962D0000EEAD4 /* EventWidgetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventWidgetController.m; sourceTree = "<group>"; };
+		4CFFE12E1B0969E6000EEAD4 /* TPTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPTextField.h; sourceTree = "<group>"; };
+		4CFFE12F1B0969E6000EEAD4 /* TPTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPTextField.m; sourceTree = "<group>"; };
 		89A8A794DAA20C907B79823A /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		96F298646A1A3FA3773822E7 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -205,6 +232,12 @@
 				4C00AC741AE850C900A5AB49 /* BackgroundView.m */,
 				4C00AC621AE8486600A5AB49 /* StatusItemView.h */,
 				4C00AC631AE8486600A5AB49 /* StatusItemView.m */,
+				4CFFE1221B09610D000EEAD4 /* TPScrollView.h */,
+				4CFFE1231B09610D000EEAD4 /* TPScrollView.m */,
+				4CFFE11F1B095DC7000EEAD4 /* TPFlippedView.h */,
+				4CFFE1201B095DC7000EEAD4 /* TPFlippedView.m */,
+				4CFFE12E1B0969E6000EEAD4 /* TPTextField.h */,
+				4CFFE12F1B0969E6000EEAD4 /* TPTextField.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -287,6 +320,18 @@
 				4CFB27E31AEC559B00F9E28C /* ClockWidgetView.m */,
 				4CFB27E51AEC55AD00F9E28C /* ClockWidgetController.h */,
 				4CFB27E61AEC55AD00F9E28C /* ClockWidgetController.m */,
+				4CFFE1131B093E38000EEAD4 /* BubbleScrollView.h */,
+				4CFFE1141B093E38000EEAD4 /* BubbleScrollView.m */,
+				4CFFE1251B0962A1000EEAD4 /* BubbleView.h */,
+				4CFFE1261B0962A1000EEAD4 /* BubbleView.m */,
+				4CFFE1191B0942E5000EEAD4 /* MessageBubbleView.h */,
+				4CFFE11A1B0942E5000EEAD4 /* MessageBubbleView.m */,
+				4CFFE1161B093E47000EEAD4 /* MessageController.h */,
+				4CFFE1171B093E47000EEAD4 /* MessageController.m */,
+				4CFFE1281B0962BF000EEAD4 /* EventBubbleView.h */,
+				4CFFE1291B0962BF000EEAD4 /* EventBubbleView.m */,
+				4CFFE12B1B0962D0000EEAD4 /* EventWidgetController.h */,
+				4CFFE12C1B0962D0000EEAD4 /* EventWidgetController.m */,
 				4C4044421AFFE3C400E4D34B /* AnniversaryView.h */,
 				4C4044431AFFE3C400E4D34B /* AnniversaryView.m */,
 				4C4044451AFFE3D500E4D34B /* AnniversaryController.h */,
@@ -455,16 +500,25 @@
 			files = (
 				4C00AC751AE850C900A5AB49 /* BackgroundView.m in Sources */,
 				4CFB27F01AEC648700F9E28C /* DataManager.m in Sources */,
+				4CFFE1271B0962A1000EEAD4 /* BubbleView.m in Sources */,
 				4C4044471AFFE3D500E4D34B /* AnniversaryController.m in Sources */,
+				4CFFE12D1B0962D0000EEAD4 /* EventWidgetController.m in Sources */,
 				4CFB27ED1AEC5C7500F9E28C /* Extension.m in Sources */,
+				4CFFE1301B0969E6000EEAD4 /* TPTextField.m in Sources */,
+				4CFFE1211B095DC7000EEAD4 /* TPFlippedView.m in Sources */,
 				4C4044441AFFE3C400E4D34B /* AnniversaryView.m in Sources */,
 				4CFB27EA1AEC580900F9E28C /* TPColor.m in Sources */,
+				4CFFE1151B093E38000EEAD4 /* BubbleScrollView.m in Sources */,
+				4CFFE1181B093E47000EEAD4 /* MessageController.m in Sources */,
+				4CFFE12A1B0962BF000EEAD4 /* EventBubbleView.m in Sources */,
 				4C00AC701AE84F6B00A5AB49 /* Panel.m in Sources */,
 				4C00AC611AE8484F00A5AB49 /* PanelController.m in Sources */,
 				4CFB27E71AEC55AD00F9E28C /* ClockWidgetController.m in Sources */,
 				4C455D431AE84770002E9A96 /* main.m in Sources */,
 				4C455D411AE84770002E9A96 /* AppDelegate.m in Sources */,
+				4CFFE1241B09610D000EEAD4 /* TPScrollView.m in Sources */,
 				4C00AC641AE8486600A5AB49 /* StatusItemView.m in Sources */,
+				4CFFE11B1B0942E5000EEAD4 /* MessageBubbleView.m in Sources */,
 				4C00AC5F1AE8484F00A5AB49 /* MenubarController.m in Sources */,
 				4CFB27E41AEC559B00F9E28C /* ClockWidgetView.m in Sources */,
 			);

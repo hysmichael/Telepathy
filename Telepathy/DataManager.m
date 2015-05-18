@@ -73,6 +73,13 @@
     return [date dateByAddingTimeInterval:timeInterval];
 }
 
+- (NSDate *)convertDateFromPartnerTimezoneToSelfTimezone:(NSDate *)date {
+    NSNumber *selfTimezone = self.userSelf[@"timezone"];
+    NSNumber *partnerTimezone = self.userPartner[@"timezone"];
+    int timeInterval = (selfTimezone.intValue - partnerTimezone.intValue) * 3600;
+    return [date dateByAddingTimeInterval:timeInterval];
+}
+
 - (void)getPartnerProfileImage:(void (^)(NSImage *))callback {
     PFFile *userImageFile = self.userPartner[@"image"];
     [userImageFile getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
@@ -123,6 +130,17 @@
 - (void)getAllAnniversaries:(void (^)(NSArray *))callback {
     PFQuery *query = [PFQuery queryWithClassName:@"Anniversary"];
     [query whereKey:@"userId" containedIn:@[self.userSelf.objectId, self.userPartner.objectId]];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            callback(objects);
+        }
+    }];
+}
+
+- (void)getAllMessages:(void (^)(NSArray *))callback {
+    PFQuery *query = [PFQuery queryWithClassName:@"Message"];
+    [query whereKey:@"userId" equalTo:self.userPartner.objectId];
+    [query orderByDescending:@"postAt"];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
             callback(objects);

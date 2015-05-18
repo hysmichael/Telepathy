@@ -29,6 +29,7 @@
 
 // USER IMAGE / TIMEZONE
 - (NSDate *) convertDateFromSelfTimezoneToPartnerTimezone: (NSDate *) date;
+- (NSDate *) convertDateFromPartnerTimezoneToSelfTimezone: (NSDate *) date;
 - (void) getPartnerProfileImage: (void(^)(NSImage *)) callback;
 
 // USER GEO LOCATION
@@ -39,5 +40,8 @@
 
 // ANNIVERSARIES
 - (void) getAllAnniversaries: (void(^)(NSArray *)) callback;
+
+// MESSAGES
+- (void) getAllMessages: (void(^)(NSArray *)) callback;
 
 @end

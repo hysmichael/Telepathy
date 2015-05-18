@@ -26,6 +26,7 @@
 - (void) setBackgroundColor:(NSColor *)color;
 - (void) setBackgroundColorWithCGColorRef:(CGColorRef)color;
 - (void) setBoarderRadius:(CGFloat)radius color:(NSColor *)color width:(CGFloat)width;
+- (void) strokeLineFromPoint:(NSPoint)point length:(CGFloat)length width:(CGFloat)width color:(NSColor *)color;
 
 @end
 

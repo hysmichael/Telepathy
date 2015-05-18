@@ -7,6 +7,8 @@
 #import "MenubarController.h"
 
 #import "ClockWidgetController.h"
+#import "MessageController.h"
+#import "EventWidgetController.h"
 #import "AnniversaryController.h"
 
 #define OPEN_DURATION .15
@@ -21,6 +23,8 @@
 
 @property (nonatomic, retain) ClockWidgetController *clockWidget;
 @property (nonatomic, retain) AnniversaryController *anniversaryWidget;
+@property (nonatomic, retain) MessageController     *messageWidget;
+@property (nonatomic, retain) EventWidgetController *eventWidget;
 
 @end
 
@@ -79,7 +83,13 @@
                                                              parentView:self.mainInterfaceContainerView];
     self.anniversaryWidget = [[AnniversaryController alloc] initWithViewFrame:NSMakeRect(20.0, 20.0, 260.0, 30.0)
                                                                    parentView:self.mainInterfaceContainerView];
+    self.messageWidget = [[MessageController alloc] initWithViewFrame:NSMakeRect(20.0, 190.0, 260.0, 150.0)
+                                                           parentView:self.mainInterfaceContainerView];
+    self.eventWidget = [[EventWidgetController alloc] initWithViewFrame:NSMakeRect(20.0, 70.0, 260.0, 100.0)
+                                                             parentView:self.mainInterfaceContainerView];
     
+    [self.mainInterfaceContainerView strokeLineFromPoint:NSMakePoint(25.0, 60.0) length:250.0 width:1.0 color:[TPColor seperatorBlue]];
+    [self.mainInterfaceContainerView strokeLineFromPoint:NSMakePoint(25.0, 180.0) length:250.0 width:1.0 color:[TPColor seperatorBlue]];
 }
 
 #pragma mark - NSWindow Basics (Frame, Notification)
@@ -296,6 +306,8 @@
             if (status == STATUS_UserDataAllReady) {
                 [self.clockWidget updateClockWidget];
                 [self.anniversaryWidget updateAnniversaryWidget];
+                [self.messageWidget updateMessageWidget];
+                [self.eventWidget updateEventWidget];
             }
         }];
     } else {
