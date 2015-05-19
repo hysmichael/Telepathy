@@ -13,6 +13,16 @@
 
 @implementation DataManager
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.eventStore = [[EKEventStore alloc] init];
+        [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:nil];
+    }
+    return self;
+}
+
 + (id)sharedManager {
     static DataManager *sharedDataManager = nil;
     static dispatch_once_t onceToken;
@@ -43,7 +53,10 @@
 
 - (void)setActiveStatus:(BOOL)isActive callback:(void (^)(BOOL))callback {    
     // avoid multiple firing
-    if ([self.userSelf[@"isActive"] boolValue] == isActive) return;
+    if ([self.userSelf[@"isActive"] boolValue] == isActive) {
+        if (callback) callback(true);
+        return;
+    };
     
     NSMutableArray *updateQueue = [[NSMutableArray alloc] initWithObjects:self.userSelf, nil];
     self.userSelf[@"isActive"] = @(isActive);
@@ -141,6 +154,61 @@
     PFQuery *query = [PFQuery queryWithClassName:@"Message"];
     [query whereKey:@"userId" equalTo:self.userPartner.objectId];
     [query orderByDescending:@"postAt"];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            callback(objects);
+        }
+    }];
+}
+
+- (void) syncSelfCalenderEventsWithinDays:(NSUInteger)numOfDays {
+    if ([EKEventStore authorizationStatusForEntityType:EKEntityMaskEvent] == EKAuthorizationStatusAuthorized) {
+        NSCalendar *calendar = [NSCalendar currentCalendar];
+
+        NSDate *startDate = [NSDate date];
+        NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+        dateComponents.day = numOfDays;
+        NSDate *endDate = [calendar dateByAddingComponents:dateComponents
+                                                    toDate:startDate
+                                                   options:0];
+        NSPredicate *predicate = [self.eventStore predicateForEventsWithStartDate:startDate
+                                                                          endDate:endDate
+                                                                        calendars:nil];
+        NSArray *events = [self.eventStore eventsMatchingPredicate:predicate];
+        
+        PFQuery *query = [PFQuery queryWithClassName:@"CalenderEvent"];
+        [query whereKey:@"userId" equalTo:self.userSelf.objectId];
+        [query whereKey:@"endDate" greaterThanOrEqualTo:startDate];
+        [query whereKey:@"startDate" lessThanOrEqualTo:endDate];
+        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            if (!error) {
+                NSMutableSet *eventsOnServer = [[NSMutableSet alloc] init];
+                for (PFObject *object in objects) [eventsOnServer addObject:object[@"eventId"]];
+                NSMutableArray *eventObjects = [[NSMutableArray alloc] init];
+                for (EKEvent *event in events) {
+                    if (![eventsOnServer containsObject:event.eventIdentifier]) {
+                        PFObject *eventObject = [PFObject objectWithClassName:@"CalenderEvent"];
+                        eventObject[@"eventId"]     = event.eventIdentifier;
+                        eventObject[@"startDate"]   = event.startDate;
+                        eventObject[@"endDate"]     = event.endDate;
+                        eventObject[@"allDay"]      = @(event.allDay);
+                        eventObject[@"userId"]      = self.userSelf.objectId;
+                        if (event.title)    eventObject[@"title"]    = event.title;
+                        if (event.location) eventObject[@"location"] = event.location;
+                        [eventObjects addObject:eventObject];
+                    }
+                }
+                [PFObject saveAllInBackground:eventObjects];
+            }
+        }];
+    }
+}
+
+- (void)getAllPartnerCalenderEvents:(void (^)(NSArray *))callback {
+    PFQuery *query = [PFQuery queryWithClassName:@"CalenderEvent"];
+    [query whereKey:@"userId" equalTo:self.userPartner.objectId];
+    [query whereKey:@"endDate" greaterThanOrEqualTo:[NSDate date]];
+    [query orderByAscending:@"startDate"];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
             callback(objects);

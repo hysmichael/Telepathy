@@ -8,9 +8,7 @@
 
 #import "ClockWidgetController.h"
 #import <CZWeatherKit.h>
-
-#define dateFormatString1 @"HH:mm・MMM dd "
-#define dateFormatString2 @"(E)"
+#import "DateFormats.h"
 
 #define kWeatherServiceKey @"2b9008dbfb034717"
 
@@ -49,9 +47,9 @@
     NSDate *partnerTime = [[DataManager sharedManager] convertDateFromSelfTimezoneToPartnerTimezone:[NSDate date]];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:dateFormatString1];
+    [dateFormatter setDateFormat:dateFormatTimeAndDate];
     NSString *rawDateStr1 = [dateFormatter stringFromDate:partnerTime];
-    [dateFormatter setDateFormat:dateFormatString2];
+    [dateFormatter setDateFormat:dateFormatWeekday];
     NSString *rawDateStr2 = [dateFormatter stringFromDate:partnerTime];
     
     NSMutableAttributedString *datetimeStr = [[NSMutableAttributedString alloc] init];

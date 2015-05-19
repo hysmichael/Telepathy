@@ -24,8 +24,11 @@
 }
 
 - (void)updateEventWidget {
-    /* TODO */
-    [self.view reloadAllBubbleViews:eventData];
+    [[DataManager sharedManager] getAllPartnerCalenderEvents:^(NSArray *objs) {
+        eventData = [objs mutableCopy];
+        [self.view reloadAllBubbleViews:eventData];
+    }];
+    [[DataManager sharedManager] syncSelfCalenderEventsWithinDays:7];
 }
 
 @end

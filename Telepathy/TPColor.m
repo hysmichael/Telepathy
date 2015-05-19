@@ -93,4 +93,18 @@
     return [self colorWithHex:@"B1CCDC" alpha:0.8];
 }
 
+
+
++ (NSColor *)chartBaseLineDarkBlue {
+    return [self colorWithHex:@"1B3592" alpha:1.0];
+}
+
++ (NSColor *)chartValidBlue {
+    return [self colorWithHex:@"B6C3F2" alpha:1.0];
+}
+
++ (NSColor *)chartInvalidBlue {
+    return [self colorWithHex:@"E4E9FB" alpha:0.5];
+}
+
 @end

@@ -28,4 +28,8 @@
 + (NSColor *) darkBlue:(CGFloat)alpha;    // 60CDF5
 + (NSColor *) seperatorBlue;              // B1CCDC
 
++ (NSColor *) chartBaseLineDarkBlue;      // 1B3592
++ (NSColor *) chartValidBlue;             // B6C3F2
++ (NSColor *) chartInvalidBlue;           // E4E9FB
+
 @end

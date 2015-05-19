@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <EventKit/EventKit.h>
 
 #define STATUS_UserDataAllReady 0
 #define STATUS_UserWithoutPartner 1
@@ -18,6 +19,7 @@
 @property PFUser *userPartner;
 
 @property PFObject *activeSession;
+@property EKEventStore *eventStore;
 
 + (id) sharedManager;
 
@@ -43,5 +45,9 @@
 
 // MESSAGES
 - (void) getAllMessages: (void(^)(NSArray *)) callback;
+
+// EVENTS
+- (void) syncSelfCalenderEventsWithinDays:(NSUInteger) numOfDays;
+- (void) getAllPartnerCalenderEvents:(void(^)(NSArray *)) callback;
 
 @end

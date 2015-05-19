@@ -8,6 +8,7 @@
 
 #import "MessageBubbleView.h"
 #import "TPTextField.h"
+#import "DateFormats.h"
 
 @interface MessageBubbleView()
 
@@ -47,10 +48,9 @@ static NSString *spaceStr = @" ";
     NSDate *dateInLocalTime = [[DataManager sharedManager] convertDateFromPartnerTimezoneToSelfTimezone:date];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     if ([NSDate daysFromDate:dateInLocalTime toDate:[NSDate date]] == 0) {
-        // date is today
-        [dateFormatter setDateFormat:@"HH:mm"];
+        [dateFormatter setDateFormat:dateFormatTimeOnly];
     } else {
-        [dateFormatter setDateFormat:@"HH:mm MMM dd"];
+        [dateFormatter setDateFormat:dateFormatTimeAndDate];
     }
     NSString *dateStr = [dateFormatter stringFromDate:dateInLocalTime];
     

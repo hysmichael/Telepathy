@@ -24,7 +24,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.prototypeClass = className;
-        self.bubbleCollectionView = [[TPScrollView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 260.0, 150.0)];
+        self.bubbleCollectionView = [[TPScrollView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 260.0, frame.size.height)];
         [self addSubview:self.bubbleCollectionView];
         CGFloat labelY = (frame.size.height - 20.0) / 2;
         self.emptyLabel = [[[NSTextField alloc] initWithFrame:NSMakeRect(0.0, labelY, 260.0, 20.0)] convertToTPLabelWithFontSize:14.0];

@@ -19,6 +19,7 @@
 		4C00AC701AE84F6B00A5AB49 /* Panel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00AC6F1AE84F6B00A5AB49 /* Panel.m */; };
 		4C00AC721AE84FB900A5AB49 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C00AC711AE84FB900A5AB49 /* MainMenu.xib */; };
 		4C00AC751AE850C900A5AB49 /* BackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00AC741AE850C900A5AB49 /* BackgroundView.m */; };
+		4C230F5E1B0BA44E004D1ECF /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C230F5D1B0BA44E004D1ECF /* EventKit.framework */; };
 		4C4044441AFFE3C400E4D34B /* AnniversaryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4044431AFFE3C400E4D34B /* AnniversaryView.m */; };
 		4C4044471AFFE3D500E4D34B /* AnniversaryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4044461AFFE3D500E4D34B /* AnniversaryController.m */; };
 		4C4327221AE85F8500500AD3 /* Status.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C43271E1AE85F8500500AD3 /* Status.png */; };
@@ -28,6 +29,8 @@
 		4C455D411AE84770002E9A96 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C455D401AE84770002E9A96 /* AppDelegate.m */; };
 		4C455D431AE84770002E9A96 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C455D421AE84770002E9A96 /* main.m */; };
 		4C455D451AE84770002E9A96 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C455D441AE84770002E9A96 /* Images.xcassets */; };
+		4C5A4E671B0BF8B600903162 /* EmotionChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C5A4E661B0BF8B600903162 /* EmotionChartView.m */; };
+		4C5A4E6A1B0BF8C000903162 /* EmotionChartController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C5A4E691B0BF8C000903162 /* EmotionChartController.m */; };
 		4C7741931AE8672300DC180A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C7741921AE8672300DC180A /* CFNetwork.framework */; };
 		4C7741951AE8672A00DC180A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C7741941AE8672A00DC180A /* CoreGraphics.framework */; };
 		4C7741971AE8673000DC180A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C7741961AE8673000DC180A /* CoreLocation.framework */; };
@@ -100,6 +103,7 @@
 		4C00AC731AE850C900A5AB49 /* BackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundView.h; sourceTree = "<group>"; };
 		4C00AC741AE850C900A5AB49 /* BackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundView.m; sourceTree = "<group>"; };
 		4C00AC871AE85AB500A5AB49 /* NSFileManagerExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSFileManagerExtension.h; sourceTree = "<group>"; };
+		4C230F5D1B0BA44E004D1ECF /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		4C4044421AFFE3C400E4D34B /* AnniversaryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnniversaryView.h; sourceTree = "<group>"; };
 		4C4044431AFFE3C400E4D34B /* AnniversaryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnniversaryView.m; sourceTree = "<group>"; };
 		4C4044451AFFE3D500E4D34B /* AnniversaryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnniversaryController.h; sourceTree = "<group>"; };
@@ -115,6 +119,11 @@
 		4C455D421AE84770002E9A96 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4C455D441AE84770002E9A96 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Telepathy/Images.xcassets; sourceTree = "<group>"; };
 		4C455D4D1AE84770002E9A96 /* TelepathyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TelepathyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C5A4E641B0BF57900903162 /* DateFormats.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DateFormats.h; sourceTree = "<group>"; };
+		4C5A4E651B0BF8B600903162 /* EmotionChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmotionChartView.h; sourceTree = "<group>"; };
+		4C5A4E661B0BF8B600903162 /* EmotionChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmotionChartView.m; sourceTree = "<group>"; };
+		4C5A4E681B0BF8C000903162 /* EmotionChartController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmotionChartController.h; sourceTree = "<group>"; };
+		4C5A4E691B0BF8C000903162 /* EmotionChartController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmotionChartController.m; sourceTree = "<group>"; };
 		4C7741921AE8672300DC180A /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		4C7741941AE8672A00DC180A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		4C7741961AE8673000DC180A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -162,6 +171,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C230F5E1B0BA44E004D1ECF /* EventKit.framework in Frameworks */,
 				4C7741A11AE8675600DC180A /* libz.dylib in Frameworks */,
 				4C77419F1AE8675000DC180A /* libsqlite3.dylib in Frameworks */,
 				4C77419D1AE8674600DC180A /* SystemConfiguration.framework in Frameworks */,
@@ -193,6 +203,7 @@
 		4C00AC861AE858F300A5AB49 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4C230F5D1B0BA44E004D1ECF /* EventKit.framework */,
 				4C7741A01AE8675600DC180A /* libz.dylib */,
 				4C77419E1AE8675000DC180A /* libsqlite3.dylib */,
 				4C7741A61AE867D400DC180A /* Bolts.framework */,
@@ -259,6 +270,7 @@
 			isa = PBXGroup;
 			children = (
 				4C00AC871AE85AB500A5AB49 /* NSFileManagerExtension.h */,
+				4C5A4E641B0BF57900903162 /* DateFormats.h */,
 				4CFB27E81AEC580900F9E28C /* TPColor.h */,
 				4CFB27E91AEC580900F9E28C /* TPColor.m */,
 				4CFB27EB1AEC5C7500F9E28C /* Extension.h */,
@@ -320,6 +332,10 @@
 				4CFB27E31AEC559B00F9E28C /* ClockWidgetView.m */,
 				4CFB27E51AEC55AD00F9E28C /* ClockWidgetController.h */,
 				4CFB27E61AEC55AD00F9E28C /* ClockWidgetController.m */,
+				4C5A4E651B0BF8B600903162 /* EmotionChartView.h */,
+				4C5A4E661B0BF8B600903162 /* EmotionChartView.m */,
+				4C5A4E681B0BF8C000903162 /* EmotionChartController.h */,
+				4C5A4E691B0BF8C000903162 /* EmotionChartController.m */,
 				4CFFE1131B093E38000EEAD4 /* BubbleScrollView.h */,
 				4CFFE1141B093E38000EEAD4 /* BubbleScrollView.m */,
 				4CFFE1251B0962A1000EEAD4 /* BubbleView.h */,
@@ -511,12 +527,14 @@
 				4CFFE1151B093E38000EEAD4 /* BubbleScrollView.m in Sources */,
 				4CFFE1181B093E47000EEAD4 /* MessageController.m in Sources */,
 				4CFFE12A1B0962BF000EEAD4 /* EventBubbleView.m in Sources */,
+				4C5A4E671B0BF8B600903162 /* EmotionChartView.m in Sources */,
 				4C00AC701AE84F6B00A5AB49 /* Panel.m in Sources */,
 				4C00AC611AE8484F00A5AB49 /* PanelController.m in Sources */,
 				4CFB27E71AEC55AD00F9E28C /* ClockWidgetController.m in Sources */,
 				4C455D431AE84770002E9A96 /* main.m in Sources */,
 				4C455D411AE84770002E9A96 /* AppDelegate.m in Sources */,
 				4CFFE1241B09610D000EEAD4 /* TPScrollView.m in Sources */,
+				4C5A4E6A1B0BF8C000903162 /* EmotionChartController.m in Sources */,
 				4C00AC641AE8486600A5AB49 /* StatusItemView.m in Sources */,
 				4CFFE11B1B0942E5000EEAD4 /* MessageBubbleView.m in Sources */,
 				4C00AC5F1AE8484F00A5AB49 /* MenubarController.m in Sources */,
