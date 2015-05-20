@@ -20,7 +20,10 @@
 }
 
 - (void)updateEmotionChartWidget {
-    
+    [[DataManager sharedManager] getPartnerEIndexSinceDays:daysInRange callback:^(NSArray *objs) {
+        DataManager *manager = [DataManager sharedManager];
+        [self.view updateChartWithCurrent:manager.userPartner[@"currentEIndex"] andHistory:objs];
+    }];
 }
 
 @end

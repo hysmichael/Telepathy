@@ -13,6 +13,6 @@
 #define dateFormatTimeAndDate @"HH:mm・MMM dd" 
 #define dateFormatTimeOnly @"HH:mm"
  
-#define dateFormatWeekday @"(E)"
+#define dateFormatWeekday @" (E)"
 
 #endif

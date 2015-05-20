@@ -83,7 +83,7 @@
 - (void) setupMainUserInterface {
     self.clockWidget = [[ClockWidgetController alloc] initWithViewFrame:NSMakeRect(20.0, 390.0, 260.0, 80.0)
                                                              parentView:self.mainInterfaceContainerView];
-    self.emotionChartWidget = [[EmotionChartController alloc] initWithViewFrame:NSMakeRect(20.0, 350.0, 260.0, 30.0)
+    self.emotionChartWidget = [[EmotionChartController alloc] initWithViewFrame:NSMakeRect(25.0, 350.0, 250.0, 30.0)
                                                                      parentView:self.mainInterfaceContainerView];
     self.messageWidget = [[MessageController alloc] initWithViewFrame:NSMakeRect(20.0, 190.0, 260.0, 150.0)
                                                            parentView:self.mainInterfaceContainerView];

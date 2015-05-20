@@ -50,4 +50,7 @@
 - (void) syncSelfCalenderEventsWithinDays:(NSUInteger) numOfDays;
 - (void) getAllPartnerCalenderEvents:(void(^)(NSArray *)) callback;
 
+// EMOTION INDEXES
+- (void) getPartnerEIndexSinceDays:(NSUInteger) numOfDays callback:(void(^)(NSArray *)) callback;
+
 @end

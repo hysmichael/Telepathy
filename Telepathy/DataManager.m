@@ -216,4 +216,24 @@
     }];
 }
 
+- (void)getPartnerEIndexSinceDays:(NSUInteger)numOfDays callback:(void (^)(NSArray *))callback {
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+    dateComponents.day = -numOfDays;
+    NSDate *startDate = [calendar dateByAddingComponents:dateComponents
+                                                toDate:[NSDate date]
+                                               options:0];
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"EIndex"];
+    [query whereKey:@"userId" equalTo:self.userPartner.objectId];
+    [query whereKey:@"postAt" greaterThanOrEqualTo:startDate];
+    [query orderByAscending:@"postAt"];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            callback(objects);
+        }
+    }];
+}
+
 @end
