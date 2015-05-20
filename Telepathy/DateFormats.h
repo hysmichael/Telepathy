@@ -10,7 +10,7 @@
 #define Telepathy_DateFormats_h
 
 
-#define dateFormatTimeAndDate @"HH:mm・MMM dd" 
+#define dateFormatTimeAndDate @"HH:mm・MMM dd"
 #define dateFormatTimeOnly @"HH:mm"
  
 #define dateFormatWeekday @" (E)"
