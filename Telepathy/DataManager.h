@@ -45,6 +45,9 @@
 
 // MESSAGES
 - (void) getAllMessages: (void(^)(NSArray *)) callback;
+- (void) sendMessage:(NSString *)messageText callback:(void(^)(BOOL)) callback;
+- (BOOL) messageIsUnread:(PFObject *) message;
+- (void) setAllMessagesAsRead;
 
 // EVENTS
 - (void) syncSelfCalenderEventsWithinDays:(NSUInteger) numOfDays;
@@ -52,5 +55,9 @@
 
 // EMOTION INDEXES
 - (void) getPartnerEIndexSinceDays:(NSUInteger) numOfDays callback:(void(^)(NSArray *)) callback;
+- (void) setEIndex:(NSInteger) index callback:(void(^)(BOOL)) callback;
+
+// COMMIT CHANGES
+- (void) commitUserState;
 
 @end

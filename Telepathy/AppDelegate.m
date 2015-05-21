@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 #import <ParseOSX/ParseOSX.h>
+#import "DDHotKey/DDHotKeyCenter.h"
+#import <Carbon/Carbon.h>
 
 @implementation AppDelegate
 
@@ -46,6 +48,12 @@ void *kContextActivePanel = &kContextActivePanel;
     
     // [Optional] Track statistics around application opens.
     [PFAnalytics trackAppOpenedWithLaunchOptions:nil];
+    
+    // Install system hot key
+    [self registerHotKey];
+    
+    // Initialize command bar window
+    self.commandBarController = [[CommandBarController alloc] initWithWindowNibName:@"CommandBar"];
     
     // Install icon into the menu bar
     self.menubarController = [[MenubarController alloc] init];
@@ -89,7 +97,7 @@ void *kContextActivePanel = &kContextActivePanel;
 
 #pragma mark - PanelControllerDelegate
 
-- (StatusItemView *)statusItemViewForPanelController:(PanelController *)controller {
+- (StatusItemView *)statusItemViewForPanelController:(PanelController*)controller {
     return self.menubarController.statusItemView;
 }
 
@@ -116,6 +124,22 @@ void *kContextActivePanel = &kContextActivePanel;
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver: self
                                                            selector: @selector(receiveWakeNote:)
                                                                name: NSWorkspaceDidWakeNotification object: NULL];
+}
+
+#pragma mark - Hotkey registration
+
+- (void) registerHotKey {
+    [[DDHotKeyCenter sharedHotKeyCenter] registerHotKeyWithKeyCode:kVK_ANSI_Q modifierFlags:NSControlKeyMask task:^(NSEvent *event) {
+        [self togglePanel:self];
+    }];
+    
+    [[DDHotKeyCenter sharedHotKeyCenter] registerHotKeyWithKeyCode:kVK_ANSI_W modifierFlags:NSControlKeyMask task:^(NSEvent *event) {
+        if ([PFUser currentUser]) {
+            if (![NSApp isActive]) [NSApp activateIgnoringOtherApps:YES];
+            [self.commandBarController.window makeKeyAndOrderFront:self];
+            [self.commandBarController.textField becomeFirstResponder];
+        }
+    }];
 }
 
 

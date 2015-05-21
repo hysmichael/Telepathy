@@ -34,7 +34,7 @@ static NSString *spaceStr = @" ";
 }
 
 - (CGFloat) setContentObject:(id)object {
-    self.unread = !([object[@"isRead"] boolValue]);
+    self.unread = ([[DataManager sharedManager] messageIsUnread:object]);
     [self setBackgroundColor:(self.unread ? [TPColor darkPurple:0.5] : [TPColor lightPurple:0.5])];
     [self setBoarderRadius:10.0 color:[TPColor mediumPurple] width:2.0];
     NSAttributedString *attrStr = [self attributedStringForText:object[@"text"] andTimeStamp:object[@"postAt"]];

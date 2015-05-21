@@ -27,6 +27,7 @@
     [[DataManager sharedManager] getAllMessages:^(NSArray *objs) {
         messageData = [objs mutableCopy];
         [self.view reloadAllBubbleViews:messageData];
+        [[DataManager sharedManager] setAllMessagesAsRead];
     }];
 }
 

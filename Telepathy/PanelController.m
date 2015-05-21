@@ -102,6 +102,8 @@
     self.hasActivePanel = NO;
 }
 
+
+/* Close the panel when user clicked somewhere else */
 - (void)windowDidResignKey:(NSNotification *)notification; {
     if ([[self window] isVisible])
     {
@@ -179,7 +181,7 @@
     if (NSMaxX(panelRect) > (NSMaxX(screenRect) - ARROW_HEIGHT))
         panelRect.origin.x -= NSMaxX(panelRect) - (NSMaxX(screenRect) - ARROW_HEIGHT);
     
-    [NSApp activateIgnoringOtherApps:NO];
+    [NSApp activateIgnoringOtherApps:YES];
     [panel setAlphaValue:0];
     [panel setFrame:statusRect display:YES];
     [panel setFrame:panelRect display:YES];
@@ -197,6 +199,9 @@
 }
 
 - (void) closePanel {
+    
+    [[DataManager sharedManager] commitUserState];
+    
     [NSAnimationContext beginGrouping];
     [[NSAnimationContext currentContext] setDuration:CLOSE_DURATION];
     [[[self window] animator] setAlphaValue:0];
@@ -250,6 +255,7 @@
     user.email = self.emailField.stringValue;
     
     user[@"gender"] = (genderIsFemale ? @"female" : @"male");
+    user[@"currentEIndex"] = @(3);
     
     [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (!error) {
@@ -320,6 +326,7 @@
         self.mainInterfaceContainerView.hidden = true;
     }
 }
+
 
 
 @end

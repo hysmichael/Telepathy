@@ -10,6 +10,7 @@
 #import <CoreLocation/CoreLocation.h>
 
 #define NULL_OBJ [NSNull null]
+#define MINUTE 60
 
 @implementation DataManager
 
@@ -59,7 +60,7 @@
     };
     
     NSMutableArray *updateQueue = [[NSMutableArray alloc] initWithObjects:self.userSelf, nil];
-    self.userSelf[@"isActive"] = @(isActive);
+    self.userSelf[@"isActive"] = [NSNumber numberWithBool:isActive];
     if (isActive) {
         // setup a new active session
         self.activeSession = [PFObject objectWithClassName:@"UserActiveSession"];
@@ -73,7 +74,7 @@
         self.activeSession[@"duration"] = @([endTime timeIntervalSinceDate:self.activeSession[@"startTime"]]);
         [updateQueue addObject:self.activeSession];
     }
-    [PFObject saveAllInBackground:updateQueue block: ^(BOOL succeeded, NSError *error){
+    [PFObject saveAllInBackground:updateQueue block:^(BOOL succeeded, NSError *error){
         if (callback) callback(succeeded);
         if (!isActive) self.activeSession = nil;
     }];
@@ -131,7 +132,6 @@
     self.userSelf[@"latitude"] = @(coordinate.latitude);
     self.userSelf[@"longitude"] = @(coordinate.longitude);
     self.userSelf[@"geoTimestamp"] = location.timestamp;
-    [self.userSelf saveInBackground];
 }
 
 - (CLLocationDistance)distanceBetween {
@@ -159,6 +159,27 @@
             callback(objects);
         }
     }];
+}
+
+- (void)sendMessage:(NSString *)messageText callback:(void (^)(BOOL))callback {
+    PFObject *message = [PFObject objectWithClassName:@"Message"];
+    message[@"userId"] = self.userSelf.objectId;
+    message[@"postAt"] = [NSDate date];
+    message[@"text"]   = messageText;
+    [message saveInBackgroundWithBlock: ^(BOOL succeeded, NSError *error) {
+        callback(succeeded);
+    }];
+}
+
+- (BOOL)messageIsUnread:(PFObject *)message {
+    NSDate *lastRead = self.userSelf[@"messageTimestamp"];
+    if (!lastRead) return true;
+    NSTimeInterval interval = [message[@"postAt"] timeIntervalSinceDate:lastRead];
+    return (interval > 0);
+}
+
+- (void)setAllMessagesAsRead {
+    self.userSelf[@"messageTimestamp"] = [NSDate date];
 }
 
 - (void) syncSelfCalenderEventsWithinDays:(NSUInteger)numOfDays {
@@ -217,7 +238,6 @@
 }
 
 - (void)getPartnerEIndexSinceDays:(NSUInteger)numOfDays callback:(void (^)(NSArray *))callback {
-    
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
     dateComponents.day = -numOfDays;
@@ -234,6 +254,22 @@
             callback(objects);
         }
     }];
+}
+
+- (void)setEIndex:(NSInteger)index callback:(void (^)(BOOL))callback {
+    PFObject *indexObj = [PFObject objectWithClassName:@"EIndex"];
+    indexObj[@"userId"] = self.userSelf.objectId;
+    indexObj[@"postAt"] = [NSDate date];
+    indexObj[@"oldValue"] = self.userSelf[@"currentEIndex"];
+    indexObj[@"newValue"] = @(index);
+    self.userSelf[@"currentEIndex"] = @(index);
+    [PFObject saveAllInBackground:@[indexObj, self.userSelf] block:^(BOOL succeeded, NSError *error) {
+        callback(succeeded);
+    }];
+}
+
+- (void)commitUserState {
+    [self.userSelf saveInBackground];
 }
 
 @end

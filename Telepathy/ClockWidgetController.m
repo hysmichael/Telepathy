@@ -16,6 +16,7 @@
     NSString *rawCityStr;
     NSString *rawTemperatureStr;
     CLLocation *partnerLocation;
+    BOOL weatherRequested;
 }
 
 - (instancetype)initWithViewFrame:(NSRect)frame parentView:(NSView *)parentView {
@@ -31,6 +32,8 @@
         rawCityStr = @"Unknown";
         rawTemperatureStr = @" -°";
         [self updateCityTemperatureLabel];
+        
+        weatherRequested = false;
     }
     return self;
 }
@@ -80,6 +83,10 @@
 }
 
 - (void) updateWeather {
+    if (weatherRequested) {
+        NSDate *timeStamp = [[DataManager sharedManager] userSelf][@"weatherTimestamp"];
+        if (timeStamp && [[NSDate date] timeIntervalSinceDate:timeStamp] < 60) return;
+    }
     CZWeatherRequest *request = [CZWeatherRequest requestWithType:CZCurrentConditionsRequestType];
     request.location = [CZWeatherLocation locationWithCLLocation:partnerLocation];
     request.service = [CZWundergroundService serviceWithKey:kWeatherServiceKey];
@@ -89,6 +96,8 @@
             self.view.weatherIconLabel.stringValue = [NSString stringWithFormat:@"%c", current.climaconCharacter];
             rawTemperatureStr = [NSString stringWithFormat:@" %.0f°", current.temperature.c];
             [self updateCityTemperatureLabel];
+            weatherRequested = true;
+            [[DataManager sharedManager] userSelf][@"weatherTimestamp"] = [NSDate date];
         }
     }];
 }
