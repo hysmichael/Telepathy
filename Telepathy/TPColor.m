@@ -104,7 +104,7 @@
 }
 
 + (NSColor *)chartInvalidBlue {
-    return [self colorWithHex:@"E4E9FB" alpha:0.5];
+    return [self colorWithHex:@"B6C3F2" alpha:0.3];
 }
 
 @end

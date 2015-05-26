@@ -12,6 +12,6 @@ static NSUInteger daysInRange = 7;
 
 @interface EmotionChartView : NSView
 
-- (void) updateChartWithCurrent:(NSNumber *) current andHistory:(NSArray *) history;
+- (void) updateChartWithCurrent:(NSNumber *) current history:(NSArray *) history activeTokens:(NSArray *) tokens;
 
 @end

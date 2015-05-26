@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "EmotionChartView.h"
 
-@interface EmotionChartController : NSObject
+@interface EmotionChartController : NSObject<ActiveTokensNotificationDelegate>
 
 @property EmotionChartView *view;
 

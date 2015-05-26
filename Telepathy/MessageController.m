@@ -24,7 +24,7 @@
 }
 
 - (void)updateMessageWidget {
-    [[DataManager sharedManager] getAllMessages:^(NSArray *objs) {
+    [[DataManager sharedManager] getMessagesSinceDays:14 callback:^(NSArray *objs) {
         messageData = [objs mutableCopy];
         [self.view reloadAllBubbleViews:messageData];
         [[DataManager sharedManager] setAllMessagesAsRead];

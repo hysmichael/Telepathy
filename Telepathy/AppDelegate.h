@@ -12,13 +12,17 @@
 #import "PanelController.h"
 #import "CommandBarController.h"
 
-@interface AppDelegate : NSObject <NSApplicationDelegate, PanelControllerDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate, NSUserNotificationCenterDelegate, PanelControllerDelegate>
 
 @property (nonatomic, strong) MenubarController *menubarController;
 @property (nonatomic, strong, readonly) PanelController *panelController;
 @property (nonatomic, strong) CommandBarController *commandBarController;
 
-- (IBAction)togglePanel:(id)sender;	
+@property NSTimer *recurrentTimer;
+
+- (IBAction) togglePanel:(id)sender;
+- (void) refreshStatusItemView;
+- (void) registerRecurrentEvents;
 
 @end
 

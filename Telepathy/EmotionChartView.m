@@ -12,7 +12,11 @@
 @interface EmotionChartView()
 
 @property NSMutableArray *keyPoints;
-@property NSMutableArray *keyValues;
+@property NSMutableDictionary *keyValues;
+@property NSMutableDictionary *activePeriodKeyStatus;
+@property BOOL defaultAsActive;
+
+@property CGFloat todayWedge;
 
 @property NSView *activeIndicator;
 @property NSTextField *timeLabel;
@@ -47,20 +51,47 @@
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
     
-    if (self.keyPoints && self.keyValues) {
-        CGFloat x = 0;
-        NSUInteger totalK = [self.keyPoints count];
+    if (self.defaultAsActive) {
         [[TPColor chartValidBlue] setFill];
-        for (NSUInteger i = 1; i < totalK; i ++) {
-            [[NSBezierPath bezierPathWithRect:NSMakeRect(x, 0.0, [self.keyPoints[i] floatValue] - x, [self.keyValues[i - 1] floatValue] * 6)] fill];
-            x = [self.keyPoints[i] floatValue];
+    } else {
+        [[TPColor chartInvalidBlue] setFill];
+    }
+    
+    if (self.keyPoints && [self.keyPoints count] > 0) {
+        CGFloat x = 0;
+        CGFloat height = 0;
+        NSUInteger totalK = [self.keyPoints count];
+        for (NSUInteger i = 0; i < totalK - 1; i ++) {
+            NSNumber *keyPoint = self.keyPoints[i];
+            x = [keyPoint floatValue];
+            if (self.keyValues[keyPoint]) {
+                height = [self.keyValues[keyPoint] floatValue] * 6;
+            }
+            if (self.activePeriodKeyStatus[keyPoint]) {
+                if ([self.activePeriodKeyStatus[keyPoint] boolValue]) {
+                    [[TPColor chartValidBlue] setFill];
+                } else {
+                    [[TPColor chartInvalidBlue] setFill];
+                }
+            }
+            [[NSBezierPath bezierPathWithRect:NSMakeRect(x, 0.0, [self.keyPoints[i + 1] floatValue] - x, height)] fill];
         }
     }
     
-    NSBezierPath *baseLine = [[NSBezierPath alloc] init];
-    [baseLine moveToPoint:NSMakePoint(0.0, 0.0)];
-    [baseLine lineToPoint:NSMakePoint(250.0, 0.0)];
+    
     [[TPColor chartBaseLineDarkBlue] setStroke];
+    CGFloat x = self.todayWedge;
+    while (x >= 0.0) {
+        NSBezierPath *dayWedge = [[NSBezierPath alloc] init];
+        [dayWedge moveToPoint:NSMakePoint(x, 0.0)];
+        [dayWedge lineToPoint:NSMakePoint(x, 5.0)];
+        [dayWedge setLineWidth:0.5];
+        [dayWedge stroke];
+        x -= (250.0 / daysInRange);
+    }
+    NSBezierPath *baseLine = [[NSBezierPath alloc] init];
+    [baseLine moveToPoint:NSMakePoint(0.0, 0.5)];
+    [baseLine lineToPoint:NSMakePoint(250.0, 0.5)];
     [baseLine stroke];
 }
 
@@ -96,40 +127,85 @@
     
     NSTimeInterval interval = -(int)(345.6 * daysInRange * (250.0 - point.x));
     NSDate *date = [NSDate dateWithTimeIntervalSinceNow:interval];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    if ([NSDate daysFromDate:date toDate:[NSDate date]] == 0) {
-        [dateFormatter setDateFormat:dateFormatTimeOnly];
-    } else {
-        [dateFormatter setDateFormat:dateFormatTimeAndDate];
-    }
-    self.timeLabel.stringValue = [dateFormatter stringFromDate:date];
+    self.timeLabel.stringValue = [date smartDescription];
 }
 
-- (void)updateChartWithCurrent:(NSNumber *)current andHistory:(NSArray *)history {
+- (void)updateChartWithCurrent:(NSNumber *)current history:(NSArray *)history activeTokens:(NSArray *)tokens {
     self.keyPoints = [[NSMutableArray alloc] init];
-    self.keyValues = [[NSMutableArray alloc] init];
+    self.keyValues = [[NSMutableDictionary alloc] init];
     
     NSDate *currentTime = [NSDate date];
     
     if ([history count] == 0) {
         [self.keyPoints addObject:@(0.0)];
-        [self.keyValues addObject:current];
+        self.keyValues[@(0.0)] = current;
     } else {
         PFObject *entry = [history firstObject];
         [self.keyPoints addObject:@(0.0)];
-        [self.keyValues addObject:entry[@"oldValue"]];
+        self.keyValues[@(0.0)] = entry[@"oldValue"];
     }
     for (PFObject *entry in history) {
-        NSDate *dateInLocalTime = [[DataManager sharedManager] convertDateFromPartnerTimezoneToSelfTimezone:entry[@"postAt"]];
+        NSDate *dateInLocalTime = entry[@"postAt"];
         NSTimeInterval interval = [currentTime timeIntervalSinceDate:dateInLocalTime];
-        [self.keyPoints addObject:@(250.0 - (interval / (345.6 * daysInRange)))];
-        [self.keyValues addObject:entry[@"newValue"]];
+        NSNumber *keyPoint = @(250.0 - (interval / (345.6 * daysInRange)));
+        [self.keyPoints addObject:keyPoint];
+        self.keyValues[keyPoint] = entry[@"newValue"];
     }
     [self.keyPoints addObject:@(250.0)];
-    [self.keyValues addObject:current];
+    self.keyValues[@(250.0)] = current;
+    
+    NSMutableArray *activePeriods = [[NSMutableArray alloc] init];
+    for (PFObject *token in tokens) {
+        NSMutableDictionary *lastActivePeriod = [activePeriods lastObject];
+        NSMutableDictionary *newActivePeriod = nil;
+        if (!lastActivePeriod || ([token.createdAt timeIntervalSinceDate:lastActivePeriod[@"end"]] > 0)) {
+            newActivePeriod = [[NSMutableDictionary alloc] init];
+            newActivePeriod[@"start"] = token.createdAt;
+            newActivePeriod[@"end"] = [token.createdAt dateByAddingTimeInterval:900];
+            [activePeriods addObject:newActivePeriod];
+        } else {
+            lastActivePeriod[@"end"] = [token.createdAt dateByAddingTimeInterval:900];
+        }
+    }
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    self.defaultAsActive = false;
+    if (tokens && [tokens count] > 0) {
+        NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+        dateComponents.day = -daysInRange;
+        dateComponents.minute = 15;
+        NSDate *startDate = [calendar dateByAddingComponents:dateComponents
+                                                      toDate:[NSDate date]
+                                                     options:0];
+        
+        PFObject *token = [tokens firstObject];
+        if ([startDate timeIntervalSinceDate:token.createdAt] > 0) self.defaultAsActive = true;
+    }
+    
+    self.activePeriodKeyStatus = [[NSMutableDictionary alloc] init];
+    for (NSDictionary *period in activePeriods) {
+        NSNumber *startPoint = @(250.0 - ([currentTime timeIntervalSinceDate:period[@"start"]] / (345.6 * daysInRange)));
+        NSNumber *endPoint = @(250.0 - ([currentTime timeIntervalSinceDate:period[@"end"]] / (345.6 * daysInRange)));
+        [self.keyPoints addObject:startPoint];
+        [self.keyPoints addObject:endPoint];
+        self.activePeriodKeyStatus[startPoint] = @true;
+        self.activePeriodKeyStatus[endPoint] = @false;
+    }
+    
+    [self.keyPoints sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        return [obj1 compare:obj2];
+    }];
+    
+    NSCalendarUnit preservedComponents = (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay);
+    NSDateComponents *components = [calendar components:preservedComponents fromDate:currentTime];
+    NSDate *normalizedDate = [calendar dateFromComponents:components];
+    self.todayWedge = (250.0 - [currentTime timeIntervalSinceDate:normalizedDate] / (345.6 * daysInRange));
     
     [self setNeedsDisplay:true];
 }
 
 
 @end
+
+
+

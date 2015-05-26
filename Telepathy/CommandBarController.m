@@ -68,8 +68,12 @@
     NSString *command = self.textField.stringValue;
 
     if ([command hasPrefix:@"@"]) {
-        NSArray *commandArgs = [command componentsSeparatedByString:SPACE_STR];
-        command = [[commandArgs firstObject] substringFromIndex:1];
+        NSRange range = [command rangeOfString:SPACE_STR];
+        NSString *args = nil;
+        if (range.location != NSNotFound) {
+            args = [command substringFromIndex:range.location + 1];
+            command = [command substringWithRange:NSMakeRange(1, range.location - 1)] ;
+        }
         
         /* Reserved for other commands */
         
@@ -79,6 +83,11 @@
         [[DataManager sharedManager] setEIndex:eIndex callback:^(BOOL success) {
             [self commandExecuted:success];
         }];
+        NSString *message = [NSString stringWithFormat:@"I just set my Emotion Index to %ld.", (long)eIndex];
+        if (args) {
+            message = [NSString stringWithFormat:@"I just set my Emotion Index to %ld. %@", (long)eIndex, args];
+        }
+        [[DataManager sharedManager] sendMessage:message callback:nil];
         
         return true;
     }
@@ -101,5 +110,10 @@
         /* Message failed to be sent. */
     }
 }
+
+- (IBAction)escapeCommand:(id)sender {
+    [self.window close];
+}
+
 
 @end

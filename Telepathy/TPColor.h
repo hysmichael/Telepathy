@@ -30,6 +30,6 @@
 
 + (NSColor *) chartBaseLineDarkBlue;      // 1B3592
 + (NSColor *) chartValidBlue;             // B6C3F2
-+ (NSColor *) chartInvalidBlue;           // E4E9FB
++ (NSColor *) chartInvalidBlue;           // B6C3F2 (30 %)
 
 @end

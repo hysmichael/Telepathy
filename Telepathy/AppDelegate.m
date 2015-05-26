@@ -49,6 +49,9 @@ void *kContextActivePanel = &kContextActivePanel;
     // [Optional] Track statistics around application opens.
     [PFAnalytics trackAppOpenedWithLaunchOptions:nil];
     
+    // Set up notification delegate
+    [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
+    
     // Install system hot key
     [self registerHotKey];
     
@@ -63,19 +66,11 @@ void *kContextActivePanel = &kContextActivePanel;
 }
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
-    if (![PFUser currentUser])
-        return NSTerminateNow;
-    
-    [[DataManager sharedManager] setActiveStatus:false callback:^(BOOL status){
-        if (status) {
-            // Explicitly remove the icon from the menu bar
-            self.menubarController = nil;
-            [[NSApplication sharedApplication] replyToApplicationShouldTerminate:true];
-        } else {
-            [[NSApplication sharedApplication] replyToApplicationShouldTerminate:false];
-        }
-    }];
-    return NSTerminateLater;
+    // Explicitly remove the icon from the menu bar
+    self.menubarController = nil;
+    // Explicitly invalidate the recurrent timer
+    if (self.recurrentTimer) [self.recurrentTimer invalidate];
+    return NSTerminateNow;
 }
 
 #pragma mark - Actions
@@ -83,6 +78,10 @@ void *kContextActivePanel = &kContextActivePanel;
 - (IBAction)togglePanel:(id)sender {
     self.menubarController.hasActiveIcon = !self.menubarController.hasActiveIcon;
     self.panelController.hasActivePanel = self.menubarController.hasActiveIcon;
+}
+
+- (void)refreshStatusItemView {
+    [self.menubarController.statusItemView setNeedsDisplay:YES];
 }
 
 #pragma mark - Public accessors
@@ -102,28 +101,24 @@ void *kContextActivePanel = &kContextActivePanel;
 }
 
 #pragma mark - System Notifications
-- (void) receiveSleepNote: (NSNotification*) note
-{
-    NSLog(@"receiveSleepNote: %@", [note name]);
+- (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification {
+    if (!self.panelController.hasActivePanel) [self togglePanel:self];
 }
 
-- (void) receiveWakeNote: (NSNotification*) note
-{
-    NSLog(@"receiveWakeNote: %@", [note name]);
+- (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification {
+    return true;
 }
 
-- (void) fileNotifications
-{
-    //These notifications are filed on NSWorkspace's notification center, not the default
-    // notification center. You will not receive sleep/wake notifications if you file
-    //with the default notification center.
-    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver: self
-                                                           selector: @selector(receiveSleepNote:)
-                                                               name: NSWorkspaceWillSleepNotification object: NULL];
-    
-    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver: self
-                                                           selector: @selector(receiveWakeNote:)
-                                                               name: NSWorkspaceDidWakeNotification object: NULL];
+- (void) registerRecurrentEvents {
+    if (self.recurrentTimer) [self.recurrentTimer invalidate];
+    if ([PFUser currentUser]) {
+        NSTimeInterval interval = 900;  // 15 minutes
+        NSDate *fireDate = [NSDate dateWithTimeIntervalSinceNow:interval];
+        self.recurrentTimer = [[NSTimer alloc] initWithFireDate:fireDate interval:interval
+                                                         target:[DataManager sharedManager] selector:@selector(checkNewNotification)
+                                                       userInfo:nil repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:self.recurrentTimer forMode:NSDefaultRunLoopMode];
+    }
 }
 
 #pragma mark - Hotkey registration

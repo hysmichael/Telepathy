@@ -68,7 +68,16 @@
     [[DataManager sharedManager] getPartnerProfileImage:^(NSImage *image) {
         self.view.profileImageView.image = image;
     }];
-    if ([[DataManager sharedManager] isPartnerActive]) {
+    [[DataManager sharedManager] registerActiveTokensNotificationDelegate:self];
+}
+
+- (void)didUpdateActiveTokens:(NSArray *)tokens {
+    BOOL isActive = false;
+    if (tokens && [tokens count] > 0) {
+        PFObject *token = [tokens lastObject];
+        if ([[NSDate date] timeIntervalSinceDate:token.createdAt] <= 900) isActive = true;
+    }
+    if (isActive) {
         self.view.profileImageView.layer.borderColor = [TPColor green].CGColor;
     } else {
         self.view.profileImageView.layer.borderColor = [NSColor grayColor].CGColor;

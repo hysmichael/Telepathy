@@ -13,25 +13,33 @@
 #define STATUS_UserWithoutPartner 1
 #define STATUS_OtherError 2
 
+@protocol ActiveTokensNotificationDelegate <NSObject>
+@required
+- (void) didUpdateActiveTokens:(NSArray *) tokens;
+@end
+
 @interface DataManager : NSObject
 
 @property PFUser *userSelf;
 @property PFUser *userPartner;
 
-@property PFObject *activeSession;
+@property BOOL hasNewNotification;
 @property EKEventStore *eventStore;
+
+@property NSMutableArray *activeTokens;
+@property NSMutableSet *activeTokensNotificationDelegates;
 
 + (id) sharedManager;
 
 - (void) prepareUserData: (void(^)(int)) callback;
 
 // USER STATUS
-- (void) setActiveStatus:(BOOL)isActive callback:(void(^)(BOOL)) callback;
-- (BOOL) isPartnerActive;
+- (void) checkNewNotification;
+- (void) getPartnerActiveTokensSinceDays:(NSUInteger) numOfDays;
+- (void) registerActiveTokensNotificationDelegate:(id<ActiveTokensNotificationDelegate>) delegate;
 
 // USER IMAGE / TIMEZONE
 - (NSDate *) convertDateFromSelfTimezoneToPartnerTimezone: (NSDate *) date;
-- (NSDate *) convertDateFromPartnerTimezoneToSelfTimezone: (NSDate *) date;
 - (void) getPartnerProfileImage: (void(^)(NSImage *)) callback;
 
 // USER GEO LOCATION
@@ -45,6 +53,7 @@
 
 // MESSAGES
 - (void) getAllMessages: (void(^)(NSArray *)) callback;
+- (void) getMessagesSinceDays:(NSUInteger) numOfDays callback:(void(^)(NSArray *)) callback;
 - (void) sendMessage:(NSString *)messageText callback:(void(^)(BOOL)) callback;
 - (BOOL) messageIsUnread:(PFObject *) message;
 - (void) setAllMessagesAsRead;

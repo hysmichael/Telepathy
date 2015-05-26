@@ -7,6 +7,7 @@
 //
 
 #import "Extension.h"
+#import "DateFormats.h"
 
 @implementation NSTextField (TPTextField)
 
@@ -80,4 +81,38 @@
     return [difference day];
 }
 
+- (NSString *)smartDescription {
+    NSInteger days = labs([NSDate daysFromDate:self toDate:[NSDate date]]);
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    if (days == 0) {
+        [dateFormatter setDateFormat:dateFormatTimeOnly];
+    } else if (days < 7) {
+        [dateFormatter setDateFormat:dateFormatTimeAndDay];
+    } else {
+        [dateFormatter setDateFormat:dateFormatTimeAndDate];
+    }
+    return [dateFormatter stringFromDate:self];
+}
+
 @end
+
+
+@implementation NSImage (TPImage)
+
+- (NSImage *)imageTintedWithColor:(NSColor *)tint
+{
+    NSImage *image = [self copy];
+    if (tint) {
+        [image lockFocus];
+        [tint set];
+        NSRect imageRect = {NSZeroPoint, [image size]};
+        NSRectFillUsingOperation(imageRect, NSCompositeSourceAtop);
+        [image unlockFocus];
+    }
+    return image;
+}
+
+
+@end
+
+

@@ -26,9 +26,9 @@
                     <visualEffectView appearanceType="vibrantLight" blendingMode="behindWindow" material="light" state="active" translatesAutoresizingMaskIntoConstraints="NO" id="nl4-9G-ueY">
                         <rect key="frame" x="0.0" y="0.0" width="976" height="60"/>
                     </visualEffectView>
-                    <textField focusRingType="none" verticalHuggingPriority="750" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="s7d-X8-eaZ">
+                    <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="s7d-X8-eaZ">
                         <rect key="frame" x="68" y="11" width="895" height="33"/>
-                        <textFieldCell key="cell" selectable="YES" editable="YES" state="on" focusRingType="none" placeholderString="Telepathy" allowsEditingTextAttributes="YES" id="LIl-Ud-oiz">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" state="on" focusRingType="none" placeholderString="Telepathy" allowsEditingTextAttributes="YES" id="LIl-Ud-oiz">
                             <font key="font" size="26" name="SourceHanSans-Regular"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -45,6 +45,19 @@
                     <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="Jzu-xB-gGt">
                         <rect key="frame" x="929" y="14" width="32" height="32"/>
                     </progressIndicator>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mAd-5e-y4K">
+                        <rect key="frame" x="13" y="8" width="45" height="45"/>
+                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" alignment="center" imageScaling="proportionallyDown" inset="2" id="CNf-4G-iPO">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="escapeCommand:" target="-2" id="Xyf-aP-sec"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="Wlc-tY-Du8" secondAttribute="bottom" id="8G5-3K-CMU"/>
@@ -62,7 +75,7 @@
                     <constraint firstAttribute="trailing" secondItem="nl4-9G-ueY" secondAttribute="trailing" id="yui-0K-4T4"/>
                 </constraints>
             </view>
-            <point key="canvasLocation" x="601" y="110.5"/>
+            <point key="canvasLocation" x="601" y="110"/>
         </window>
     </objects>
     <resources>

@@ -4,7 +4,6 @@
 
 @synthesize statusItem = _statusItem;
 @synthesize image = _image;
-@synthesize alternateImage = _alternateImage;
 @synthesize isHighlighted = _isHighlighted;
 @synthesize action = _action;
 @synthesize target = _target;
@@ -30,9 +29,17 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-	[self.statusItem drawStatusBarBackgroundInRect:dirtyRect withHighlight:self.isHighlighted];
+    [self.statusItem drawStatusBarBackgroundInRect:dirtyRect withHighlight:self.isHighlighted];
     
-    NSImage *icon = self.isHighlighted ? self.alternateImage : self.image;
+    NSImage *icon;
+    if (self.isHighlighted) {
+        icon = [self.image imageTintedWithColor:[NSColor whiteColor]];
+    } else if ([[DataManager sharedManager] hasNewNotification]) {
+        icon = self.image;
+    } else {
+        icon = [self.image imageTintedWithColor:[TPColor defaultBlack]];
+    }
+    
     NSSize iconSize = [icon size];
     NSRect bounds = self.bounds;
     CGFloat iconX = roundf((NSWidth(bounds) - iconSize.width) / 2);
@@ -67,16 +74,6 @@
     if (_image != newImage) {
         _image = newImage;
         [self setNeedsDisplay:YES];
-    }
-}
-
-- (void)setAlternateImage:(NSImage *)newImage
-{
-    if (_alternateImage != newImage) {
-        _alternateImage = newImage;
-        if (self.isHighlighted) {
-            [self setNeedsDisplay:YES];
-        }
     }
 }
 

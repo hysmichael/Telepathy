@@ -51,8 +51,8 @@
     
     self.titleLabel.stringValue = object[@"title"];
     
-    NSDate *startDateInLocalTime = [[DataManager sharedManager] convertDateFromPartnerTimezoneToSelfTimezone:object[@"startDate"]];
-    NSDate *endDateInLocalTime = [[DataManager sharedManager] convertDateFromPartnerTimezoneToSelfTimezone:object[@"endDate"]];
+    NSDate *startDateInLocalTime = object[@"startDate"];
+    NSDate *endDateInLocalTime = object[@"endDate"];
     
     NSDateFormatter *startDateFormatter = [[NSDateFormatter alloc] init];
     if ([NSDate daysFromDate:startDateInLocalTime toDate:endDateInLocalTime] == 0) {

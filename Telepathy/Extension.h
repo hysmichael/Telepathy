@@ -33,5 +33,12 @@
 @interface NSDate (TPDate)
 
 + (NSInteger)daysFromDate:(NSDate*)fromDateTime toDate:(NSDate*)toDateTime;
+- (NSString *) smartDescription;
+
+@end
+
+@interface NSImage (TPImage)
+
+- (NSImage *)imageTintedWithColor:(NSColor *)tint;
 
 @end

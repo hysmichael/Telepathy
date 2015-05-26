@@ -11,7 +11,6 @@
 		4C00AC5F1AE8484F00A5AB49 /* MenubarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00AC5B1AE8484F00A5AB49 /* MenubarController.m */; };
 		4C00AC601AE8484F00A5AB49 /* Panel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C00AC5C1AE8484F00A5AB49 /* Panel.xib */; };
 		4C00AC611AE8484F00A5AB49 /* PanelController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00AC5E1AE8484F00A5AB49 /* PanelController.m */; };
-		4C00AC641AE8486600A5AB49 /* StatusItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00AC631AE8486600A5AB49 /* StatusItemView.m */; };
 		4C00AC661AE848AB00A5AB49 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C00AC651AE848AB00A5AB49 /* Carbon.framework */; };
 		4C00AC681AE848B000A5AB49 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C00AC671AE848B000A5AB49 /* Cocoa.framework */; };
 		4C00AC6A1AE848FE00A5AB49 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C00AC691AE848FE00A5AB49 /* AppKit.framework */; };
@@ -24,11 +23,10 @@
 		4C4044471AFFE3D500E4D34B /* AnniversaryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4044461AFFE3D500E4D34B /* AnniversaryController.m */; };
 		4C4327221AE85F8500500AD3 /* Status.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C43271E1AE85F8500500AD3 /* Status.png */; };
 		4C4327231AE85F8500500AD3 /* Status@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C43271F1AE85F8500500AD3 /* Status@2x.png */; };
-		4C4327241AE85F8500500AD3 /* StatusHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C4327201AE85F8500500AD3 /* StatusHighlighted.png */; };
-		4C4327251AE85F8500500AD3 /* StatusHighlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C4327211AE85F8500500AD3 /* StatusHighlighted@2x.png */; };
 		4C455D411AE84770002E9A96 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C455D401AE84770002E9A96 /* AppDelegate.m */; };
 		4C455D431AE84770002E9A96 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C455D421AE84770002E9A96 /* main.m */; };
 		4C455D451AE84770002E9A96 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C455D441AE84770002E9A96 /* Images.xcassets */; };
+		4C57B9E11B12778E00C88775 /* StatusItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C57B9E01B12778E00C88775 /* StatusItemView.m */; };
 		4C5A4E671B0BF8B600903162 /* EmotionChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C5A4E661B0BF8B600903162 /* EmotionChartView.m */; };
 		4C5A4E6A1B0BF8C000903162 /* EmotionChartController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C5A4E691B0BF8C000903162 /* EmotionChartController.m */; };
 		4C7741931AE8672300DC180A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C7741921AE8672300DC180A /* CFNetwork.framework */; };
@@ -96,8 +94,6 @@
 		4C00AC5C1AE8484F00A5AB49 /* Panel.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Panel.xib; sourceTree = "<group>"; };
 		4C00AC5D1AE8484F00A5AB49 /* PanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PanelController.h; sourceTree = "<group>"; };
 		4C00AC5E1AE8484F00A5AB49 /* PanelController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PanelController.m; sourceTree = "<group>"; };
-		4C00AC621AE8486600A5AB49 /* StatusItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusItemView.h; sourceTree = "<group>"; };
-		4C00AC631AE8486600A5AB49 /* StatusItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusItemView.m; sourceTree = "<group>"; };
 		4C00AC651AE848AB00A5AB49 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		4C00AC671AE848B000A5AB49 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		4C00AC691AE848FE00A5AB49 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -116,8 +112,6 @@
 		4C4044461AFFE3D500E4D34B /* AnniversaryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnniversaryController.m; sourceTree = "<group>"; };
 		4C43271E1AE85F8500500AD3 /* Status.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Status.png; sourceTree = "<group>"; };
 		4C43271F1AE85F8500500AD3 /* Status@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Status@2x.png"; sourceTree = "<group>"; };
-		4C4327201AE85F8500500AD3 /* StatusHighlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = StatusHighlighted.png; sourceTree = "<group>"; };
-		4C4327211AE85F8500500AD3 /* StatusHighlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "StatusHighlighted@2x.png"; sourceTree = "<group>"; };
 		4C455D3A1AE84770002E9A96 /* Telepathy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Telepathy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C455D3E1AE84770002E9A96 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4C455D3F1AE84770002E9A96 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -125,6 +119,8 @@
 		4C455D421AE84770002E9A96 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4C455D441AE84770002E9A96 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Telepathy/Images.xcassets; sourceTree = "<group>"; };
 		4C455D4D1AE84770002E9A96 /* TelepathyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TelepathyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C57B9DF1B12778E00C88775 /* StatusItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusItemView.h; sourceTree = "<group>"; };
+		4C57B9E01B12778E00C88775 /* StatusItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusItemView.m; sourceTree = "<group>"; };
 		4C5A4E641B0BF57900903162 /* DateFormats.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DateFormats.h; sourceTree = "<group>"; };
 		4C5A4E651B0BF8B600903162 /* EmotionChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmotionChartView.h; sourceTree = "<group>"; };
 		4C5A4E661B0BF8B600903162 /* EmotionChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmotionChartView.m; sourceTree = "<group>"; };
@@ -246,8 +242,6 @@
 			children = (
 				4C43271E1AE85F8500500AD3 /* Status.png */,
 				4C43271F1AE85F8500500AD3 /* Status@2x.png */,
-				4C4327201AE85F8500500AD3 /* StatusHighlighted.png */,
-				4C4327211AE85F8500500AD3 /* StatusHighlighted@2x.png */,
 			);
 			name = Icon;
 			sourceTree = "<group>";
@@ -259,8 +253,8 @@
 				4C00AC6F1AE84F6B00A5AB49 /* Panel.m */,
 				4C00AC731AE850C900A5AB49 /* BackgroundView.h */,
 				4C00AC741AE850C900A5AB49 /* BackgroundView.m */,
-				4C00AC621AE8486600A5AB49 /* StatusItemView.h */,
-				4C00AC631AE8486600A5AB49 /* StatusItemView.m */,
+				4C57B9DF1B12778E00C88775 /* StatusItemView.h */,
+				4C57B9E01B12778E00C88775 /* StatusItemView.m */,
 				4CFFE1221B09610D000EEAD4 /* TPScrollView.h */,
 				4CFFE1231B09610D000EEAD4 /* TPScrollView.m */,
 				4CFFE11F1B095DC7000EEAD4 /* TPFlippedView.h */,
@@ -470,6 +464,7 @@
 				TargetAttributes = {
 					4C455D391AE84770002E9A96 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = 6MT74LPLEY;
 					};
 					4C455D4C1AE84770002E9A96 = {
 						CreatedOnToolsVersion = 6.3.1;
@@ -502,11 +497,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C00AC601AE8484F00A5AB49 /* Panel.xib in Resources */,
-				4C4327251AE85F8500500AD3 /* StatusHighlighted@2x.png in Resources */,
 				4C4327231AE85F8500500AD3 /* Status@2x.png in Resources */,
 				4CB8760F1B0D3E11006BFDC8 /* CommandBar.xib in Resources */,
 				4C4327221AE85F8500500AD3 /* Status.png in Resources */,
-				4C4327241AE85F8500500AD3 /* StatusHighlighted.png in Resources */,
 				4C455D451AE84770002E9A96 /* Images.xcassets in Resources */,
 				4C00AC721AE84FB900A5AB49 /* MainMenu.xib in Resources */,
 			);
@@ -562,6 +555,7 @@
 				4C00AC751AE850C900A5AB49 /* BackgroundView.m in Sources */,
 				4CFB27F01AEC648700F9E28C /* DataManager.m in Sources */,
 				4CFFE1271B0962A1000EEAD4 /* BubbleView.m in Sources */,
+				4C57B9E11B12778E00C88775 /* StatusItemView.m in Sources */,
 				4C4044471AFFE3D500E4D34B /* AnniversaryController.m in Sources */,
 				4CFFE12D1B0962D0000EEAD4 /* EventWidgetController.m in Sources */,
 				4CFB27ED1AEC5C7500F9E28C /* Extension.m in Sources */,
@@ -585,7 +579,6 @@
 				4C455D411AE84770002E9A96 /* AppDelegate.m in Sources */,
 				4CFFE1241B09610D000EEAD4 /* TPScrollView.m in Sources */,
 				4C5A4E6A1B0BF8C000903162 /* EmotionChartController.m in Sources */,
-				4C00AC641AE8486600A5AB49 /* StatusItemView.m in Sources */,
 				4CFFE11B1B0942E5000EEAD4 /* MessageBubbleView.m in Sources */,
 				4C00AC5F1AE8484F00A5AB49 /* MenubarController.m in Sources */,
 				4CFB27E41AEC559B00F9E28C /* ClockWidgetView.m in Sources */,

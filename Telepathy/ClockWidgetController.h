@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ClockWidgetView.h"
 
-@interface ClockWidgetController : NSObject<CLLocationManagerDelegate>;
+@interface ClockWidgetController : NSObject<CLLocationManagerDelegate, ActiveTokensNotificationDelegate>;
 
 @property (nonatomic, retain) ClockWidgetView * view;
 @property CLLocationManager *locationManager;

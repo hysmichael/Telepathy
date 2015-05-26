@@ -14,10 +14,9 @@
 
 #pragma mark -
 
-@interface PanelController : NSWindowController <NSWindowDelegate>
+@interface PanelController : NSWindowController <NSWindowDelegate, NSTextFieldDelegate>
 {
     BOOL _hasActivePanel;
-    BOOL genderIsFemale;
 }
 
 @property (nonatomic) BOOL hasActivePanel;
@@ -33,12 +32,14 @@
 @property (nonatomic, retain) IBOutlet NSTextField *passwordField;
 @property (nonatomic, retain) IBOutlet NSTextField *errorLabel;
 
+@property (nonatomic, retain) IBOutlet NSMatrix *genderMatrix;
+@property NSUInteger genderOption;
+
+@property BOOL formValid;
+
 - (IBAction) login:(id)sender;
 - (IBAction) signup:(id)sender;
 - (IBAction) switchGenderTheme:(id)sender;
-
-- (void) readData;
-- (void) writeData;
 
 - (id)initWithDelegate:(id<PanelControllerDelegate>)delegate;
 

@@ -45,14 +45,7 @@ static NSString *spaceStr = @" ";
 
 
 - (NSAttributedString *) attributedStringForText:(NSString *) text andTimeStamp:(NSDate *) date {
-    NSDate *dateInLocalTime = [[DataManager sharedManager] convertDateFromPartnerTimezoneToSelfTimezone:date];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    if ([NSDate daysFromDate:dateInLocalTime toDate:[NSDate date]] == 0) {
-        [dateFormatter setDateFormat:dateFormatTimeOnly];
-    } else {
-        [dateFormatter setDateFormat:dateFormatTimeAndDate];
-    }
-    NSString *dateStr = [dateFormatter stringFromDate:dateInLocalTime];
+    NSString *dateStr = [date smartDescription];
     
     NSColor *textColor = self.unread ? [TPColor defaultBlack] : [TPColor darkGray];
     NSColor *timeColor = self.unread ? [TPColor lightGray] : [TPColor mediumGray];

@@ -7,6 +7,7 @@
 //
 
 #import "DataManager.h"
+#import "AppDelegate.h"
 #import <CoreLocation/CoreLocation.h>
 
 #define NULL_OBJ [NSNull null]
@@ -20,6 +21,7 @@
     if (self) {
         self.eventStore = [[EKEventStore alloc] init];
         [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:nil];
+        self.activeTokensNotificationDelegates = [[NSMutableSet alloc] init];
     }
     return self;
 }
@@ -44,7 +46,6 @@
     [query getObjectInBackgroundWithId:partnerID block:^(PFObject *object, NSError *error) {
         if (object) {
             self.userPartner = (PFUser *)object;
-            [self setActiveStatus:true callback:nil];
             callback(STATUS_UserDataAllReady);
         } else {
             callback(STATUS_OtherError);
@@ -52,45 +53,10 @@
     }];
 }
 
-- (void)setActiveStatus:(BOOL)isActive callback:(void (^)(BOOL))callback {    
-    // avoid multiple firing
-    if ([self.userSelf[@"isActive"] boolValue] == isActive) {
-        if (callback) callback(true);
-        return;
-    };
-    
-    NSMutableArray *updateQueue = [[NSMutableArray alloc] initWithObjects:self.userSelf, nil];
-    self.userSelf[@"isActive"] = [NSNumber numberWithBool:isActive];
-    if (isActive) {
-        // setup a new active session
-        self.activeSession = [PFObject objectWithClassName:@"UserActiveSession"];
-        self.activeSession[@"user"]      = self.userSelf;
-        self.activeSession[@"startTime"] = [NSDate date];
-        [updateQueue addObject:self.activeSession];
-    } else if (self.activeSession) {
-        // close up the current active session
-        NSDate *endTime = [NSDate date];
-        self.activeSession[@"endTime"]  = endTime;
-        self.activeSession[@"duration"] = @([endTime timeIntervalSinceDate:self.activeSession[@"startTime"]]);
-        [updateQueue addObject:self.activeSession];
-    }
-    [PFObject saveAllInBackground:updateQueue block:^(BOOL succeeded, NSError *error){
-        if (callback) callback(succeeded);
-        if (!isActive) self.activeSession = nil;
-    }];
-}
-
 - (NSDate *)convertDateFromSelfTimezoneToPartnerTimezone:(NSDate *)date {
     NSNumber *selfTimezone = self.userSelf[@"timezone"];
     NSNumber *partnerTimezone = self.userPartner[@"timezone"];
     int timeInterval = (partnerTimezone.intValue - selfTimezone.intValue) * 3600;
-    return [date dateByAddingTimeInterval:timeInterval];
-}
-
-- (NSDate *)convertDateFromPartnerTimezoneToSelfTimezone:(NSDate *)date {
-    NSNumber *selfTimezone = self.userSelf[@"timezone"];
-    NSNumber *partnerTimezone = self.userPartner[@"timezone"];
-    int timeInterval = (selfTimezone.intValue - partnerTimezone.intValue) * 3600;
     return [date dateByAddingTimeInterval:timeInterval];
 }
 
@@ -104,8 +70,83 @@
     }];
 }
 
-- (BOOL)isPartnerActive {
-    return [self.userPartner[@"isActive"] boolValue];
+- (NSString *)getPartnerPronoun {
+    return ([self.userPartner[@"gender"] isEqualToString:@"male"] ? @"Him" : @"Her");
+}
+
+- (void)checkNewNotification {
+    NSDate *notificationTimestamp = self.userSelf[@"notificationTimestamp"];
+    if (!notificationTimestamp) notificationTimestamp = [NSDate distantPast];
+    NSDate *messageTimestamp = self.userSelf[@"messageTimestamp"];
+    if (!messageTimestamp) messageTimestamp = [NSDate distantPast];
+    NSDate *fetchingFrom = notificationTimestamp;
+    if ([messageTimestamp timeIntervalSinceDate:notificationTimestamp] > 0) fetchingFrom = messageTimestamp;
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"Message"];
+    [query whereKey:@"userId" equalTo:self.userPartner.objectId];
+    [query whereKey:@"postAt" greaterThan:fetchingFrom];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            NSUInteger count = [objects count];
+            if (count > 0) {
+                self.hasNewNotification = true;
+                AppDelegate *delegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];
+                [delegate refreshStatusItemView];
+            }
+            if (count < 3) {
+                for (PFObject *message in objects) {
+                    NSUserNotification *notification = [[NSUserNotification alloc] init];
+                    notification.title = [NSString stringWithFormat:@"New Message from %@", [self getPartnerPronoun]];
+                    notification.informativeText = message[@"text"];
+                    notification.soundName = NSUserNotificationDefaultSoundName;
+                    [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+                }
+            } else {
+                NSUserNotification *notification = [[NSUserNotification alloc] init];
+                notification.title = [NSString stringWithFormat:@"%lu New Messages from %@", count, [self getPartnerPronoun]];
+                notification.soundName = NSUserNotificationDefaultSoundName;
+                [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+            }
+        }
+    }];
+    
+    PFObject *token = [PFObject objectWithClassName:@"ActiveToken"];
+    token[@"userId"] = self.userSelf.objectId;
+    self.userSelf[@"notificationTimestamp"] = [NSDate date];
+    [token saveInBackground];
+    [self.userSelf saveInBackground];
+}
+
+- (void)getPartnerActiveTokensSinceDays:(NSUInteger)numOfDays {
+    PFQuery *query = [PFQuery queryWithClassName:@"ActiveToken"];
+    [query whereKey:@"userId" equalTo:self.userPartner.objectId];
+    if (self.activeTokens && [self.activeTokens count] > 0) {
+        PFObject *lastToken = [self.activeTokens lastObject];
+        [query whereKey:@"createdAt" greaterThan:lastToken.createdAt];
+    } else {
+        NSCalendar *calendar = [NSCalendar currentCalendar];
+        NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+        dateComponents.day = -numOfDays;
+        NSDate *startDate = [calendar dateByAddingComponents:dateComponents
+                                                      toDate:[NSDate date]
+                                                     options:0];
+        [query whereKey:@"createdAt" greaterThan:startDate];
+    }
+    [query orderByAscending:@"createdAt"];
+    
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            if (!self.activeTokens) self.activeTokens = [[NSMutableArray alloc] init];
+            [self.activeTokens addObjectsFromArray:objects];
+            for (id<ActiveTokensNotificationDelegate> delegate in self.activeTokensNotificationDelegates) {
+                [delegate didUpdateActiveTokens:self.activeTokens];
+            }
+        }
+    }];
+}
+
+- (void)registerActiveTokensNotificationDelegate:(id<ActiveTokensNotificationDelegate>)delegate {
+    [self.activeTokensNotificationDelegates addObject:delegate];
 }
 
 - (CLLocation *)getPartnerLocation:(void (^)(CLPlacemark *))callback {
@@ -132,6 +173,7 @@
     self.userSelf[@"latitude"] = @(coordinate.latitude);
     self.userSelf[@"longitude"] = @(coordinate.longitude);
     self.userSelf[@"geoTimestamp"] = location.timestamp;
+    self.userSelf[@"timezone"] = @([[NSTimeZone localTimeZone] secondsFromGMT] / 3600);
 }
 
 - (CLLocationDistance)distanceBetween {
@@ -161,13 +203,31 @@
     }];
 }
 
+- (void)getMessagesSinceDays:(NSUInteger)numOfDays callback:(void (^)(NSArray *))callback {
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+    dateComponents.day = -numOfDays;
+    NSDate *startDate = [calendar dateByAddingComponents:dateComponents
+                                                  toDate:[NSDate date]
+                                                 options:0];
+    PFQuery *query = [PFQuery queryWithClassName:@"Message"];
+    [query whereKey:@"userId" equalTo:self.userPartner.objectId];
+    [query whereKey:@"postAt" greaterThanOrEqualTo:startDate];
+    [query orderByDescending:@"postAt"];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            callback(objects);
+        }
+    }];
+}
+
 - (void)sendMessage:(NSString *)messageText callback:(void (^)(BOOL))callback {
     PFObject *message = [PFObject objectWithClassName:@"Message"];
     message[@"userId"] = self.userSelf.objectId;
     message[@"postAt"] = [NSDate date];
     message[@"text"]   = messageText;
     [message saveInBackgroundWithBlock: ^(BOOL succeeded, NSError *error) {
-        callback(succeeded);
+        if (callback) callback(succeeded);
     }];
 }
 
@@ -264,11 +324,21 @@
     indexObj[@"newValue"] = @(index);
     self.userSelf[@"currentEIndex"] = @(index);
     [PFObject saveAllInBackground:@[indexObj, self.userSelf] block:^(BOOL succeeded, NSError *error) {
-        callback(succeeded);
+        if (callback) callback(succeeded);
     }];
 }
 
 - (void)commitUserState {
+    /* commit a user active token */
+    PFObject *token = [PFObject objectWithClassName:@"ActiveToken"];
+    token[@"userId"] = self.userSelf.objectId;
+    [token saveInBackground];
+    
+    /* set new notification as false */
+    self.hasNewNotification = false;
+    AppDelegate *delegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];
+    [delegate refreshStatusItemView];
+    
     [self.userSelf saveInBackground];
 }
 

@@ -1,6 +1,8 @@
 
 #import <Foundation/Foundation.h>
-#import "NSFileManagerExtension.h"
+#import <QuartzCore/QuartzCore.h>
+
+#import "AppDelegate.h"
 
 #import "PanelController.h"
 #import "StatusItemView.h"
@@ -18,7 +20,7 @@
 #define kPanelWidth 300.0
 
 #define kPanelHeight 502.0
-#define kPaenlHieghtPriorLogin 398.0
+#define kPaenlHieghtPriorLogin 420.0
 
 @interface PanelController()
 
@@ -64,17 +66,21 @@
     [[panel contentView] addSubview:self.mainInterfaceContainerView];
     self.mainInterfaceContainerView.hidden = true;
     
+    self.formValid = false;
+    self.emailField.delegate = self;
+    self.passwordField.delegate = self;
+    
     // set up login screen
     PFUser *currentUser = [PFUser currentUser];
     if (currentUser) {
-        genderIsFemale = !([currentUser[@"gender"] isEqualToString:@"male"]);
+        self.genderOption = ([currentUser[@"gender"] isEqualToString:@"male"] ? 1 : 0);
         self.emailField.stringValue = currentUser.username;
         [self.passwordField becomeFirstResponder];
         [PFUser logOut];
     } else {
-        genderIsFemale = true;
+        self.genderOption = 0;
     }
-    [self setColorThemeForLoginScreen];
+    [self setColorThemeForLoginScreen:false];
     
     // set up main user interface in background
     [self setupMainUserInterface];
@@ -220,41 +226,40 @@
 
 #pragma mark - Login Screen Logics
 
--(void) setColorThemeForLoginScreen {
-    if (genderIsFemale) {
-        [self.loginContainerView setBackgroundColorWithCGColorRef:CGColorCreateGenericRGB(184/255.0, 119/255.0, 250/155.0, 0.2)];
+-(void) setColorThemeForLoginScreen:(BOOL) animated {
+    CGColorRef colorRef;
+    if (self.genderOption == 0) {
+        colorRef = CGColorCreateGenericRGB(184/255.0, 119/255.0, 250/155.0, 0.2);
     } else {
-        [self.loginContainerView setBackgroundColorWithCGColorRef:CGColorCreateGenericRGB(109/255.0, 176/255.0, 244/255.0, 0.2)];
+        colorRef = CGColorCreateGenericRGB(109/255.0, 176/255.0, 244/255.0, 0.2);
     }
-    [self.logoImageView setImage:[NSImage imageNamed:(genderIsFemale ? @"logo_female" : @"logo_male")]];
+    
+    CALayer *layer = self.loginContainerView.layer;
+    if (animated) {
+        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
+        animation.fromValue = (__bridge id)(layer.backgroundColor);
+        animation.toValue = (__bridge id)(colorRef);
+        animation.duration = 0.5;
+        [layer addAnimation:animation forKey:@"backgroundColor"];
+    }
+    layer.backgroundColor = colorRef;
+    
+    [self.logoImageView setImage:[NSImage imageNamed:(self.genderOption == 0 ? @"logo_female" : @"logo_male")]];
 }
 
-- (BOOL) loginFormsAreCompleted {
-    if ([self.emailField.stringValue length] == 0) {
-        [self.emailField setPlaceholderString:@"Required"];
-        [self.emailField becomeFirstResponder];
-        return false;
-    }
-    
-    if ([self.passwordField.stringValue length] == 0) {
-        [self.passwordField setPlaceholderString:@"Required"];
-        [self.passwordField becomeFirstResponder];
-        return false;
-    }
-    
-    return true;
+- (void)controlTextDidChange:(NSNotification *)obj {
+    self.formValid = ([self.emailField.stringValue length] > 0 && [self.emailField.stringValue containsString:@"@"] &&
+                      [self.passwordField.stringValue length] > 0);
 }
 
 - (void)signup:(id)sender {
-    if (![self loginFormsAreCompleted]) return;
-    
     PFUser *user = [PFUser user];
     
     user.username = self.emailField.stringValue;
     user.password = self.passwordField.stringValue;
     user.email = self.emailField.stringValue;
     
-    user[@"gender"] = (genderIsFemale ? @"female" : @"male");
+    user[@"gender"] = (self.genderOption == 0 ? @"female" : @"male");
     user[@"currentEIndex"] = @(3);
     
     [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -274,8 +279,6 @@
 }
 
 - (void)login:(id)sender {
-    if (![self loginFormsAreCompleted]) return;
-    
     [PFUser logInWithUsernameInBackground:self.emailField.stringValue
                                  password:self.passwordField.stringValue
                                     block:^(PFUser *user, NSError *error) {
@@ -288,20 +291,9 @@
 }
 
 - (void)switchGenderTheme:(id)sender {
-    genderIsFemale = !genderIsFemale;
-    [self setColorThemeForLoginScreen];
+    [self setColorThemeForLoginScreen: true];
 }
 
-
-#pragma mark - Data I/O
-
-- (void) readData {
-
-}
-
-- (void) writeData {
-
-}
 
 #pragma mark - Main Interface Logics
 
@@ -319,6 +311,13 @@
                 [self.messageWidget updateMessageWidget];
                 [self.eventWidget updateEventWidget];
                 [self.anniversaryWidget updateAnniversaryWidget];
+                
+                /* pull active tokens from server */
+                [[DataManager sharedManager] getPartnerActiveTokensSinceDays:7];
+                
+                /* register recurrent event to pull new notifications from the server */
+                AppDelegate *delegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];
+                [delegate registerRecurrentEvents];
             }
         }];
     } else {
