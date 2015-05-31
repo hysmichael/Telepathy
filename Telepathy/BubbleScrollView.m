@@ -13,7 +13,7 @@
 @interface BubbleScrollView()
 
 @property Class prototypeClass;
-@property TPScrollView *bubbleCollectionView;
+@property NSScrollView *bubbleCollectionView;
 @property NSTextField *emptyLabel;
 
 @end
@@ -24,7 +24,9 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.prototypeClass = className;
-        self.bubbleCollectionView = [[TPScrollView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 260.0, frame.size.height)];
+        self.bubbleCollectionView = [[NSScrollView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 260.0, frame.size.height)];
+        self.bubbleCollectionView.drawsBackground = false;
+        self.bubbleCollectionView.hasVerticalScroller = true;
         [self addSubview:self.bubbleCollectionView];
         CGFloat labelY = (frame.size.height - 20.0) / 2;
         self.emptyLabel = [[[NSTextField alloc] initWithFrame:NSMakeRect(0.0, labelY, 260.0, 20.0)] convertToTPLabelWithFontSize:14.0];
@@ -46,6 +48,7 @@
         [bubbleView setFrame:NSMakeRect(0.0, y, 260.0, bubbleHeight)];
         y += bubbleHeight + 5.0;
         [documentView addSubview:bubbleView];
+        [bubbleView addTrackingRect];
     }
     documentView.frame = NSMakeRect(0.0, 0.0, 260.0, y - 5.0);
     [self.bubbleCollectionView setDocumentView:documentView];

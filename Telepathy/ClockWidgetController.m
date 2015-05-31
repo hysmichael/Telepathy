@@ -92,7 +92,7 @@
 }
 
 - (void) updateWeather {
-    if (weatherRequested) {
+    if (weatherRequested && ![[DataManager sharedManager] onSpy]) {
         NSDate *timeStamp = [[DataManager sharedManager] userSelf][@"weatherTimestamp"];
         if (timeStamp && [[NSDate date] timeIntervalSinceDate:timeStamp] < 60) return;
     }
@@ -106,7 +106,9 @@
             rawTemperatureStr = [NSString stringWithFormat:@" %.0f°", current.temperature.c];
             [self updateCityTemperatureLabel];
             weatherRequested = true;
-            [[DataManager sharedManager] userSelf][@"weatherTimestamp"] = [NSDate date];
+            if (![[DataManager sharedManager] onSpy]) {
+                [[DataManager sharedManager] userSelf][@"weatherTimestamp"] = [NSDate date];
+            }
         }
     }];
 }

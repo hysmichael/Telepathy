@@ -18,6 +18,8 @@
 		4C00AC701AE84F6B00A5AB49 /* Panel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00AC6F1AE84F6B00A5AB49 /* Panel.m */; };
 		4C00AC721AE84FB900A5AB49 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C00AC711AE84FB900A5AB49 /* MainMenu.xib */; };
 		4C00AC751AE850C900A5AB49 /* BackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C00AC741AE850C900A5AB49 /* BackgroundView.m */; };
+		4C086A3F1B1AB4DB00D4A168 /* TPConstraintView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C086A3E1B1AB4DB00D4A168 /* TPConstraintView.m */; };
+		4C086A421B1AC18300D4A168 /* TPPagingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C086A411B1AC18300D4A168 /* TPPagingScrollView.m */; };
 		4C230F5E1B0BA44E004D1ECF /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C230F5D1B0BA44E004D1ECF /* EventKit.framework */; };
 		4C4044441AFFE3C400E4D34B /* AnniversaryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4044431AFFE3C400E4D34B /* AnniversaryView.m */; };
 		4C4044471AFFE3D500E4D34B /* AnniversaryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C4044461AFFE3D500E4D34B /* AnniversaryController.m */; };
@@ -56,7 +58,6 @@
 		4CFFE1181B093E47000EEAD4 /* MessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE1171B093E47000EEAD4 /* MessageController.m */; };
 		4CFFE11B1B0942E5000EEAD4 /* MessageBubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE11A1B0942E5000EEAD4 /* MessageBubbleView.m */; };
 		4CFFE1211B095DC7000EEAD4 /* TPFlippedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE1201B095DC7000EEAD4 /* TPFlippedView.m */; };
-		4CFFE1241B09610D000EEAD4 /* TPScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE1231B09610D000EEAD4 /* TPScrollView.m */; };
 		4CFFE1271B0962A1000EEAD4 /* BubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE1261B0962A1000EEAD4 /* BubbleView.m */; };
 		4CFFE12A1B0962BF000EEAD4 /* EventBubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE1291B0962BF000EEAD4 /* EventBubbleView.m */; };
 		4CFFE12D1B0962D0000EEAD4 /* EventWidgetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CFFE12C1B0962D0000EEAD4 /* EventWidgetController.m */; };
@@ -105,6 +106,10 @@
 		4C00AC731AE850C900A5AB49 /* BackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundView.h; sourceTree = "<group>"; };
 		4C00AC741AE850C900A5AB49 /* BackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundView.m; sourceTree = "<group>"; };
 		4C00AC871AE85AB500A5AB49 /* NSFileManagerExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSFileManagerExtension.h; sourceTree = "<group>"; };
+		4C086A3D1B1AB4DB00D4A168 /* TPConstraintView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPConstraintView.h; sourceTree = "<group>"; };
+		4C086A3E1B1AB4DB00D4A168 /* TPConstraintView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPConstraintView.m; sourceTree = "<group>"; };
+		4C086A401B1AC18300D4A168 /* TPPagingScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPPagingScrollView.h; sourceTree = "<group>"; };
+		4C086A411B1AC18300D4A168 /* TPPagingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPPagingScrollView.m; sourceTree = "<group>"; };
 		4C230F5D1B0BA44E004D1ECF /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		4C4044421AFFE3C400E4D34B /* AnniversaryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnniversaryView.h; sourceTree = "<group>"; };
 		4C4044431AFFE3C400E4D34B /* AnniversaryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnniversaryView.m; sourceTree = "<group>"; };
@@ -165,8 +170,6 @@
 		4CFFE11A1B0942E5000EEAD4 /* MessageBubbleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageBubbleView.m; sourceTree = "<group>"; };
 		4CFFE11F1B095DC7000EEAD4 /* TPFlippedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPFlippedView.h; sourceTree = "<group>"; };
 		4CFFE1201B095DC7000EEAD4 /* TPFlippedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPFlippedView.m; sourceTree = "<group>"; };
-		4CFFE1221B09610D000EEAD4 /* TPScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPScrollView.h; sourceTree = "<group>"; };
-		4CFFE1231B09610D000EEAD4 /* TPScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TPScrollView.m; sourceTree = "<group>"; };
 		4CFFE1251B0962A1000EEAD4 /* BubbleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BubbleView.h; sourceTree = "<group>"; };
 		4CFFE1261B0962A1000EEAD4 /* BubbleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BubbleView.m; sourceTree = "<group>"; };
 		4CFFE1281B0962BF000EEAD4 /* EventBubbleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventBubbleView.h; sourceTree = "<group>"; };
@@ -255,8 +258,10 @@
 				4C00AC741AE850C900A5AB49 /* BackgroundView.m */,
 				4C57B9DF1B12778E00C88775 /* StatusItemView.h */,
 				4C57B9E01B12778E00C88775 /* StatusItemView.m */,
-				4CFFE1221B09610D000EEAD4 /* TPScrollView.h */,
-				4CFFE1231B09610D000EEAD4 /* TPScrollView.m */,
+				4C086A401B1AC18300D4A168 /* TPPagingScrollView.h */,
+				4C086A411B1AC18300D4A168 /* TPPagingScrollView.m */,
+				4C086A3D1B1AB4DB00D4A168 /* TPConstraintView.h */,
+				4C086A3E1B1AB4DB00D4A168 /* TPConstraintView.m */,
 				4CFFE11F1B095DC7000EEAD4 /* TPFlippedView.h */,
 				4CFFE1201B095DC7000EEAD4 /* TPFlippedView.m */,
 				4CFFE12E1B0969E6000EEAD4 /* TPTextField.h */,
@@ -559,9 +564,11 @@
 				4C4044471AFFE3D500E4D34B /* AnniversaryController.m in Sources */,
 				4CFFE12D1B0962D0000EEAD4 /* EventWidgetController.m in Sources */,
 				4CFB27ED1AEC5C7500F9E28C /* Extension.m in Sources */,
+				4C086A421B1AC18300D4A168 /* TPPagingScrollView.m in Sources */,
 				4CB876001B0D2DE9006BFDC8 /* DDHotKeyUtilities.m in Sources */,
 				4CB875FE1B0D2DE9006BFDC8 /* DDHotKeyCenter.m in Sources */,
 				4CFFE1301B0969E6000EEAD4 /* TPTextField.m in Sources */,
+				4C086A3F1B1AB4DB00D4A168 /* TPConstraintView.m in Sources */,
 				4CB8760D1B0D35D0006BFDC8 /* CommandBarController.m in Sources */,
 				4CFFE1211B095DC7000EEAD4 /* TPFlippedView.m in Sources */,
 				4C4044441AFFE3C400E4D34B /* AnniversaryView.m in Sources */,
@@ -577,7 +584,6 @@
 				4CFB27E71AEC55AD00F9E28C /* ClockWidgetController.m in Sources */,
 				4C455D431AE84770002E9A96 /* main.m in Sources */,
 				4C455D411AE84770002E9A96 /* AppDelegate.m in Sources */,
-				4CFFE1241B09610D000EEAD4 /* TPScrollView.m in Sources */,
 				4C5A4E6A1B0BF8C000903162 /* EmotionChartController.m in Sources */,
 				4CFFE11B1B0942E5000EEAD4 /* MessageBubbleView.m in Sources */,
 				4C00AC5F1AE8484F00A5AB49 /* MenubarController.m in Sources */,

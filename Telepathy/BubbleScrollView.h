@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "TPScrollView.h"
 
 @interface BubbleScrollView : NSView
 

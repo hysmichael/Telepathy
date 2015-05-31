@@ -22,23 +22,30 @@
 - (void)updateAnniversaryWidget {
     [[DataManager sharedManager] getAllAnniversaries:^(NSArray *objects) {
         NSUInteger count = [objects count];
+        NSMutableArray *displayedData = [NSMutableArray array];
+        NSUInteger selected_index;
         if (count == 0) {
-            self.view.titleLable.stringValue = @"No anniversaries";
+            [displayedData addObject:@{@"title":@"No anniversaries", @"days":@"-"}];
+            selected_index = 0;
         } else {
-            NSUInteger selected_index = arc4random_uniform((int)count);
-            PFObject *anni = objects[selected_index];
-            NSInteger days = [NSDate daysFromDate:anni[@"date"] toDate:[NSDate date]];
-            NSString *title = anni[@"title"];
-            if (days == 0) {
-                self.view.titleLable.stringValue = [title stringByReplacingCharactersInRange:NSMakeRange(0, 1)
-                                                                                  withString:[[title substringToIndex:1] uppercaseString]];
-                self.view.daysLabel.stringValue = @"today";
-            } else {
-                self.view.titleLable.stringValue = [NSString stringWithFormat:(days > 0 ? @"Since %@" : @"To %@"), title];
-                NSInteger days_abs = ABS(days);
-                self.view.daysLabel.stringValue = [NSString stringWithFormat:(days_abs == 1 ? @"%ld day" : @"%ld days"), days_abs];
+            selected_index = arc4random_uniform((int)count);
+            for (PFObject *anni in objects) {
+                NSInteger days = [NSDate daysFromDate:anni[@"date"] toDate:[NSDate date]];
+                NSString *title = anni[@"title"];
+                NSString *titleStr, *daysStr;
+                if (days == 0) {
+                    titleStr = [title stringByReplacingCharactersInRange:NSMakeRange(0, 1)
+                                                              withString:[[title substringToIndex:1] uppercaseString]];
+                    daysStr = @"today";
+                } else {
+                    titleStr = [NSString stringWithFormat:(days > 0 ? @"Since %@" : @"To %@"), title];
+                    NSInteger days_abs = ABS(days);
+                    daysStr = [NSString stringWithFormat:(days_abs == 1 ? @"%ld day" : @"%ld days"), days_abs];
+                }
+                [displayedData addObject:@{@"title": titleStr, @"days": daysStr}];
             }
         }
+        [self.view setAnniversaryData:displayedData defaultIndex:selected_index];
     }];
 }
 

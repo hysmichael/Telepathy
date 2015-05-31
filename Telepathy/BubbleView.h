@@ -15,4 +15,6 @@
 /* Configure the bubble content with model object and returns the proper bubble height. */
 - (CGFloat) setContentObject:(id)object;
 
+- (void) addTrackingRect;
+
 @end

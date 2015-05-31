@@ -72,20 +72,80 @@
         NSString *args = nil;
         if (range.location != NSNotFound) {
             args = [command substringFromIndex:range.location + 1];
-            command = [command substringWithRange:NSMakeRange(1, range.location - 1)] ;
+            command = [command substringWithRange:NSMakeRange(1, range.location - 1)];
+        } else {
+            command = [command substringFromIndex:1];
         }
         
-        /* Reserved for other commands */
+        /* Turn on "Spy Mode" */
+        if ([command isEqualToString:@"spy"]) {
+            [[DataManager sharedManager] setOnSpy:true];
+            [self commandExecuted:true];
+            return true;
+        }
+        
+        /* Setter for Focus Mode */
+        if ([command isEqualToString:@"focus"]) {
+            if (!args) return false;
+            if ([args isEqualToString:@"on"]) {
+                [[DataManager sharedManager] setOnFocus:true];
+            } else if ([args isEqualToString:@"off"]) {
+                [[DataManager sharedManager] setOnFocus:false];
+            } else {
+                return false;
+            }
+            [self commandExecuted:true];
+            return true;
+        }
+        
+        /* Add New Anniversary */
+        if ([command isEqualToString:@"anniversary"]) {
+            if (!args) return false;
+            NSRange secondRange = [args rangeOfString:SPACE_STR];
+            NSString *name = nil;
+            if (range.location == NSNotFound) return false;
+            name = [args substringFromIndex:secondRange.location + 1];
+            args = [args substringWithRange:NSMakeRange(0, secondRange.location)];
+            if ([name length] == 0) return false;
+            
+            NSCalendar *calender = [NSCalendar currentCalendar];
+            
+            NSArray *components = [args componentsSeparatedByString:@"/"];
+            if ([components count] != 2 && [components count] != 3) return false;
+            NSInteger monthValue = [components[0] integerValue];
+            NSInteger dayValue = [components[1] integerValue];
+            NSInteger yearValue = [calender component:NSCalendarUnitYear fromDate:[NSDate date]];
+            if ([components count] == 3) yearValue = [components[2] integerValue];
+            
+            if (!(monthValue >= 1 && monthValue <= 12 && dayValue >= 1 && dayValue <= 31 &&
+                  yearValue >= 1970)) return false;
+
+            NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+            [dateComponents setDay:dayValue];
+            [dateComponents setMonth:monthValue];
+            [dateComponents setYear:yearValue];
+            NSDate *date = [calender dateFromComponents:dateComponents];
+            if (!date) return false;
+            
+            [[DataManager sharedManager] addAnniversary:name date:date callback:^(BOOL success) {
+                [self commandExecuted:success];
+            }];
+            
+            return true;
+        }
         
         /* Setter for Emotion Index */
         NSInteger eIndex = [command integerValue];
-        if (eIndex < 0 || eIndex > 5) return false;
+        if (eIndex == 0) return false;
+        
+        if (eIndex < 1 || eIndex > 5) return false;
+        
         [[DataManager sharedManager] setEIndex:eIndex callback:^(BOOL success) {
             [self commandExecuted:success];
         }];
-        NSString *message = [NSString stringWithFormat:@"I just set my Emotion Index to %ld.", (long)eIndex];
-        if (args) {
-            message = [NSString stringWithFormat:@"I just set my Emotion Index to %ld. %@", (long)eIndex, args];
+        NSString *message = [NSString stringWithFormat:@"Emotion Index -> %ld", (long)eIndex];
+        if (args && [args length] > 0) {
+            message = [NSString stringWithFormat:@"(Emotion Index -> %ld) %@", (long)eIndex, args];
         }
         [[DataManager sharedManager] sendMessage:message callback:nil];
         

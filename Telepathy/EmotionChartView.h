@@ -8,10 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 
-static NSUInteger daysInRange = 7;
+@class EmotionChartController;
 
 @interface EmotionChartView : NSView
 
+@property CGFloat daysInRange;
+
+@property (weak) EmotionChartController *controller;
 - (void) updateChartWithCurrent:(NSNumber *) current history:(NSArray *) history activeTokens:(NSArray *) tokens;
 
 @end

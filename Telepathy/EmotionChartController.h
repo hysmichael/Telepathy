@@ -14,7 +14,8 @@
 @property EmotionChartView *view;
 
 - (instancetype)initWithViewFrame:(NSRect)frame parentView:(NSView *)parentView;
-
 - (void) updateEmotionChartWidget;
+
+- (void) refreshChart;
 
 @end

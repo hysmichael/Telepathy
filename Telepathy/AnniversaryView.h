@@ -10,7 +10,6 @@
 
 @interface AnniversaryView : NSView
 
-@property (nonatomic, retain) NSTextField *titleLable;
-@property (nonatomic, retain) NSTextField *daysLabel;
+- (void) setAnniversaryData:(NSArray *) data defaultIndex:(NSUInteger) index;
 
 @end

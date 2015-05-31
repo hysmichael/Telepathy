@@ -111,8 +111,7 @@
 
 /* Close the panel when user clicked somewhere else */
 - (void)windowDidResignKey:(NSNotification *)notification; {
-    if ([[self window] isVisible])
-    {
+    if ([[self window] isVisible] && ![[DataManager sharedManager] onFocus]) {
         self.hasActivePanel = NO;
     }
 }

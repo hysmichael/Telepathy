@@ -13,6 +13,8 @@
 #define NULL_OBJ [NSNull null]
 #define MINUTE 60
 
+#define UNAVAILABLE_ON_SPY if (self.onSpy) return;
+
 @implementation DataManager
 
 - (instancetype)init
@@ -46,6 +48,15 @@
     [query getObjectInBackgroundWithId:partnerID block:^(PFObject *object, NSError *error) {
         if (object) {
             self.userPartner = (PFUser *)object;
+            if (self.onSpy) {
+                /* onSpy mode: switch users */
+                PFUser *tmp = self.userSelf;
+                self.userSelf = self.userPartner;
+                self.userPartner = tmp;
+                
+                /* clean cache */
+                self.activeTokens = nil;
+            }
             callback(STATUS_UserDataAllReady);
         } else {
             callback(STATUS_OtherError);
@@ -75,6 +86,7 @@
 }
 
 - (void)checkNewNotification {
+    UNAVAILABLE_ON_SPY
     NSDate *notificationTimestamp = self.userSelf[@"notificationTimestamp"];
     if (!notificationTimestamp) notificationTimestamp = [NSDate distantPast];
     NSDate *messageTimestamp = self.userSelf[@"messageTimestamp"];
@@ -112,6 +124,7 @@
     
     PFObject *token = [PFObject objectWithClassName:@"ActiveToken"];
     token[@"userId"] = self.userSelf.objectId;
+    token[@"type"] = @"Background";
     self.userSelf[@"notificationTimestamp"] = [NSDate date];
     [token saveInBackground];
     [self.userSelf saveInBackground];
@@ -133,6 +146,7 @@
         [query whereKey:@"createdAt" greaterThan:startDate];
     }
     [query orderByAscending:@"createdAt"];
+    [query setLimit:560];   /* 20 Hours a day all active */
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
@@ -162,6 +176,7 @@
 }
 
 - (BOOL)needsUpdateSelfCurrentLocation {
+    if (self.onSpy) return false;
     NSDate *lastupdate = self.userSelf[@"geoTimestamp"];
     if (!lastupdate) return true;
     NSTimeInterval interval = [[NSDate date] timeIntervalSinceDate:lastupdate];
@@ -169,6 +184,7 @@
 }
 
 - (void) updateSelfCurrentLocation:(CLLocation *)location {
+    UNAVAILABLE_ON_SPY
     CLLocationCoordinate2D coordinate = location.coordinate;
     self.userSelf[@"latitude"] = @(coordinate.latitude);
     self.userSelf[@"longitude"] = @(coordinate.longitude);
@@ -185,10 +201,21 @@
 - (void)getAllAnniversaries:(void (^)(NSArray *))callback {
     PFQuery *query = [PFQuery queryWithClassName:@"Anniversary"];
     [query whereKey:@"userId" containedIn:@[self.userSelf.objectId, self.userPartner.objectId]];
+    [query orderByAscending:@"date"];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
             callback(objects);
         }
+    }];
+}
+
+- (void)addAnniversary:(NSString *)name date:(NSDate *)date callback:(void (^)(BOOL))callback {
+    PFObject *anniversary = [PFObject objectWithClassName:@"Anniversary"];
+    anniversary[@"userId"]  = self.userSelf.objectId;
+    anniversary[@"date"]    = date;
+    anniversary[@"title"]   = name;
+    [anniversary saveInBackgroundWithBlock: ^(BOOL succeeded, NSError *error) {
+        if (callback) callback(succeeded);
     }];
 }
 
@@ -222,6 +249,7 @@
 }
 
 - (void)sendMessage:(NSString *)messageText callback:(void (^)(BOOL))callback {
+    UNAVAILABLE_ON_SPY
     PFObject *message = [PFObject objectWithClassName:@"Message"];
     message[@"userId"] = self.userSelf.objectId;
     message[@"postAt"] = [NSDate date];
@@ -239,10 +267,12 @@
 }
 
 - (void)setAllMessagesAsRead {
+    UNAVAILABLE_ON_SPY
     self.userSelf[@"messageTimestamp"] = [NSDate date];
 }
 
 - (void) syncSelfCalenderEventsWithinDays:(NSUInteger)numOfDays {
+    UNAVAILABLE_ON_SPY
     if ([EKEventStore authorizationStatusForEntityType:EKEntityMaskEvent] == EKAuthorizationStatusAuthorized) {
         NSCalendar *calendar = [NSCalendar currentCalendar];
 
@@ -317,6 +347,7 @@
 }
 
 - (void)setEIndex:(NSInteger)index callback:(void (^)(BOOL))callback {
+    UNAVAILABLE_ON_SPY
     PFObject *indexObj = [PFObject objectWithClassName:@"EIndex"];
     indexObj[@"userId"] = self.userSelf.objectId;
     indexObj[@"postAt"] = [NSDate date];
@@ -329,11 +360,29 @@
 }
 
 - (void)commitUserState {
-    /* commit a user active token */
-    PFObject *token = [PFObject objectWithClassName:@"ActiveToken"];
-    token[@"userId"] = self.userSelf.objectId;
-    [token saveInBackground];
+    /* do not commit user state in replacement of partner */
+    if (self.onSpy) {
+        [self setOnSpy:false];
+        self.activeTokens = nil;
+        return;
+    }
     
+    /* commit a user active token */
+    /* (no commitment if the previous token is within 15 minutes) */
+    BOOL needsCommmitNewToken = true;
+    if (self.activeTokens) {
+        PFObject *lastToken = [self.activeTokens lastObject];
+        if (lastToken && [[NSDate date] timeIntervalSinceDate:lastToken.createdAt] <= 900) {
+            needsCommmitNewToken = false;
+        }
+    }
+    if (needsCommmitNewToken) {
+        PFObject *token = [PFObject objectWithClassName:@"ActiveToken"];
+        token[@"userId"] = self.userSelf.objectId;
+        token[@"type"] = @"Active";
+        [token saveInBackground];
+    }
+        
     /* set new notification as false */
     self.hasNewNotification = false;
     AppDelegate *delegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];

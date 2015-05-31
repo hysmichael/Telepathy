@@ -29,6 +29,9 @@
 @property NSMutableArray *activeTokens;
 @property NSMutableSet *activeTokensNotificationDelegates;
 
+@property BOOL onSpy;
+@property BOOL onFocus;
+
 + (id) sharedManager;
 
 - (void) prepareUserData: (void(^)(int)) callback;
@@ -50,6 +53,7 @@
 
 // ANNIVERSARIES
 - (void) getAllAnniversaries: (void(^)(NSArray *)) callback;
+- (void) addAnniversary:(NSString *) name date:(NSDate *) date callback:(void(^)(BOOL)) callback;
 
 // MESSAGES
 - (void) getAllMessages: (void(^)(NSArray *)) callback;

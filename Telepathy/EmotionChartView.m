@@ -8,6 +8,7 @@
 
 #import "EmotionChartView.h"
 #import "DateFormats.h"
+#import "EmotionChartController.h"
 
 @interface EmotionChartView()
 
@@ -20,6 +21,9 @@
 
 @property NSView *activeIndicator;
 @property NSTextField *timeLabel;
+@property NSPoint lastCursorPos;
+
+@property CGFloat swipeX;
 
 @end
 
@@ -29,11 +33,14 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.daysInRange = 7.0;
+        
         NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:self.bounds
                                                                     options:NSTrackingActiveAlways | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved
                                                                       owner:self
                                                                    userInfo:nil];
         [self addTrackingArea:trackingArea];
+        [self setAcceptsTouchEvents:true];
         
         self.activeIndicator = [[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 1.0, 30.0)];
         [self.activeIndicator setBackgroundColor:[TPColor chartBaseLineDarkBlue]];
@@ -87,7 +94,7 @@
         [dayWedge lineToPoint:NSMakePoint(x, 5.0)];
         [dayWedge setLineWidth:0.5];
         [dayWedge stroke];
-        x -= (250.0 / daysInRange);
+        x -= (250.0 / self.daysInRange);
     }
     NSBezierPath *baseLine = [[NSBezierPath alloc] init];
     [baseLine moveToPoint:NSMakePoint(0.0, 0.5)];
@@ -111,6 +118,8 @@
 }
 
 - (void)updateActiveIndicatorPos:(NSPoint) point {
+    self.lastCursorPos = point;
+    
     NSRect frame1 = self.activeIndicator.frame;
     frame1.origin.x = point.x - 0.5;
     self.activeIndicator.frame = frame1;
@@ -125,7 +134,7 @@
     }
     self.timeLabel.frame = frame2;
     
-    NSTimeInterval interval = -(int)(345.6 * daysInRange * (250.0 - point.x));
+    NSTimeInterval interval = -(int)(345.6 * self.daysInRange * (250.0 - point.x));
     NSDate *date = [NSDate dateWithTimeIntervalSinceNow:interval];
     self.timeLabel.stringValue = [date smartDescription];
 }
@@ -147,7 +156,7 @@
     for (PFObject *entry in history) {
         NSDate *dateInLocalTime = entry[@"postAt"];
         NSTimeInterval interval = [currentTime timeIntervalSinceDate:dateInLocalTime];
-        NSNumber *keyPoint = @(250.0 - (interval / (345.6 * daysInRange)));
+        NSNumber *keyPoint = @(250.0 - (interval / (345.6 * self.daysInRange)));
         [self.keyPoints addObject:keyPoint];
         self.keyValues[keyPoint] = entry[@"newValue"];
     }
@@ -171,21 +180,16 @@
     NSCalendar *calendar = [NSCalendar currentCalendar];
     self.defaultAsActive = false;
     if (tokens && [tokens count] > 0) {
-        NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
-        dateComponents.day = -daysInRange;
-        dateComponents.minute = 15;
-        NSDate *startDate = [calendar dateByAddingComponents:dateComponents
-                                                      toDate:[NSDate date]
-                                                     options:0];
-        
+        NSTimeInterval interval = (NSTimeInterval)((self.daysInRange * 24 * 3600) - 900);
+        NSDate *startDate = [NSDate dateWithTimeInterval:-interval sinceDate:currentTime];
         PFObject *token = [tokens firstObject];
         if ([startDate timeIntervalSinceDate:token.createdAt] > 0) self.defaultAsActive = true;
     }
     
     self.activePeriodKeyStatus = [[NSMutableDictionary alloc] init];
     for (NSDictionary *period in activePeriods) {
-        NSNumber *startPoint = @(250.0 - ([currentTime timeIntervalSinceDate:period[@"start"]] / (345.6 * daysInRange)));
-        NSNumber *endPoint = @(250.0 - ([currentTime timeIntervalSinceDate:period[@"end"]] / (345.6 * daysInRange)));
+        NSNumber *startPoint = @(250.0 - ([currentTime timeIntervalSinceDate:period[@"start"]] / (345.6 * self.daysInRange)));
+        NSNumber *endPoint = @(250.0 - ([currentTime timeIntervalSinceDate:period[@"end"]] / (345.6 * self.daysInRange)));
         [self.keyPoints addObject:startPoint];
         [self.keyPoints addObject:endPoint];
         self.activePeriodKeyStatus[startPoint] = @true;
@@ -199,11 +203,43 @@
     NSCalendarUnit preservedComponents = (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay);
     NSDateComponents *components = [calendar components:preservedComponents fromDate:currentTime];
     NSDate *normalizedDate = [calendar dateFromComponents:components];
-    self.todayWedge = (250.0 - [currentTime timeIntervalSinceDate:normalizedDate] / (345.6 * daysInRange));
+    self.todayWedge = (250.0 - [currentTime timeIntervalSinceDate:normalizedDate] / (345.6 * self.daysInRange));
     
     [self setNeedsDisplay:true];
+    
+    [self updateActiveIndicatorPos:self.lastCursorPos];
 }
 
+
+- (void)touchesBeganWithEvent:(NSEvent *)event {
+    if (event.type == NSEventTypeGesture) {
+        NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:self];
+        if (touches.count == 2) {
+            self.swipeX = 0.0;
+            for (NSTouch *touch in touches) {
+                self.swipeX += touch.normalizedPosition.x;
+            }
+        }
+    }
+}
+
+- (void)touchesMovedWithEvent:(NSEvent *)event {
+    if (event.type == NSEventTypeGesture) {
+        NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:self];
+        if (touches.count == 2) {
+            CGFloat newSwipeX = 0.0;
+            for (NSTouch *touch in touches) {
+                newSwipeX += touch.normalizedPosition.x;
+            }
+            CGFloat delta = (newSwipeX - self.swipeX) * 4.0;
+            self.swipeX = newSwipeX;
+            self.daysInRange += delta;
+            if (self.daysInRange <= 1.0) self.daysInRange = 1.0;
+            if (self.daysInRange >= 7.0) self.daysInRange = 7.0;
+            [self.controller refreshChart];
+        }
+    }
+}
 
 @end
 

@@ -25,7 +25,7 @@
     if (self) {
         
         self.progressView = [[NSView alloc] init];
-        [self.progressView setBackgroundColor:[TPColor darkBlue:0.6]];
+        [self.progressView setBackgroundColor:[TPColor darkBlue:0.5]];
         self.progressView.layer.cornerRadius = 10.0;
         
         [self addSubview:self.progressView];
@@ -41,7 +41,7 @@
         [self addSubview:self.titleLabel];
         [self addSubview:self.timeLabel];
         
-        [self setBackgroundColor:[TPColor lightBlue:50.0]];
+        [self setBackgroundColor:[TPColor lightBlue:0.5]];
         [self setBoarderRadius:10.0 color:[TPColor mediumBlue] width:2.0];
     }
     return self;
@@ -54,20 +54,36 @@
     NSDate *startDateInLocalTime = object[@"startDate"];
     NSDate *endDateInLocalTime = object[@"endDate"];
     
-    NSDateFormatter *startDateFormatter = [[NSDateFormatter alloc] init];
-    if ([NSDate daysFromDate:startDateInLocalTime toDate:endDateInLocalTime] == 0) {
-        [startDateFormatter setDateFormat:dateFormatTimeOnly];
+    if ([object[@"allDay"] boolValue]) {
+        /* allday event */
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:dateFormatDateOnly];
+        if ([NSDate daysFromDate:startDateInLocalTime toDate:endDateInLocalTime] == 1) {
+            self.timeLabel.stringValue = [dateFormatter stringFromDate:startDateInLocalTime];
+        } else {
+            NSDate *adjustedEndDate = [NSDate dateWithTimeInterval:-(3600 * 24) sinceDate:endDateInLocalTime];
+            
+            NSString *startDateStr = [dateFormatter stringFromDate:startDateInLocalTime];
+            NSString *endDateStr = [dateFormatter stringFromDate:adjustedEndDate];
+            
+            self.timeLabel.stringValue = [NSString stringWithFormat:@"%@ 〜 %@", startDateStr, endDateStr];
+        }
     } else {
-        [startDateFormatter setDateFormat:dateFormatTimeAndDate];
+        NSDateFormatter *startDateFormatter = [[NSDateFormatter alloc] init];
+        if ([NSDate daysFromDate:startDateInLocalTime toDate:endDateInLocalTime] == 0) {
+            [startDateFormatter setDateFormat:dateFormatTimeOnly];
+        } else {
+            [startDateFormatter setDateFormat:dateFormatTimeAndDate];
+        }
+        
+        NSDateFormatter *endDateFormatter = [[NSDateFormatter alloc] init];
+        [endDateFormatter setDateFormat:dateFormatTimeAndDate];
+        
+        NSString *startDateStr = [startDateFormatter stringFromDate:startDateInLocalTime];
+        NSString *endDateStr = [endDateFormatter stringFromDate:endDateInLocalTime];
+        
+        self.timeLabel.stringValue = [NSString stringWithFormat:@"%@ 〜 %@", startDateStr, endDateStr];
     }
-    
-    NSDateFormatter *endDateFormatter = [[NSDateFormatter alloc] init];
-    [endDateFormatter setDateFormat:dateFormatTimeAndDate];
-    
-    NSString *startDateStr = [startDateFormatter stringFromDate:startDateInLocalTime];
-    NSString *endDateStr = [endDateFormatter stringFromDate:endDateInLocalTime];
-    
-    self.timeLabel.stringValue = [NSString stringWithFormat:@"%@ 〜 %@", startDateStr, endDateStr];
     
     NSTimeInterval totalLength = [endDateInLocalTime timeIntervalSinceDate:startDateInLocalTime];
     NSTimeInterval elapsedLength = [[NSDate date] timeIntervalSinceDate:startDateInLocalTime];
