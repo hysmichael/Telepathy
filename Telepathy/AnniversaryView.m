@@ -67,7 +67,7 @@
     [self.scrollView setDocumentView:documentView];
     
     [self.scrollView setXPage:index yPage:0];
-    self.daysLabel.stringValue = [data firstObject][@"days"];
+    self.daysLabel.stringValue = data[index][@"days"];
     self.dataArray = data;
 }
 

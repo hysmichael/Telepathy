@@ -13,8 +13,6 @@
 @property NSUInteger xPage;
 @property NSUInteger yPage;
 
-@property BOOL canRunResetAnimation;
-@property BOOL willRunOrIsRunningResetAnimation;
 @property NSUInteger lastBoundChangeNotificationNo;
 
 @end
@@ -36,18 +34,14 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewBoundsDidChangeNotification object:self.contentView];
 }
 
-- (void)scrollViewDidScroll {
+- (void)scrollViewClingToPage {
     CGPoint origin = self.contentView.bounds.origin;
     
     CGPoint clingOrigin = origin;
     NSInteger xIndex = 0, yIndex = 0;
     
-    if (self.horizontalPaging > 0.0 && origin.x > 0.0 && origin.x + self.bounds.size.width < ((NSView *)self.documentView).bounds.size.width)
-        clingOrigin.x = round(origin.x / self.horizontalPaging) * self.horizontalPaging;
-    if (self.verticalPaging > 0.0 && origin.y > 0.0 && origin.y + self.bounds.size.height > ((NSView *)self.documentView).bounds.size.height)
-        clingOrigin.y = round(origin.y / self.verticalPaging) * self.verticalPaging;
-    
     if (self.horizontalPaging > 0.0) {
+        clingOrigin.x = round(origin.x / self.horizontalPaging) * self.horizontalPaging;
         xIndex = (NSInteger)(clingOrigin.x / self.horizontalPaging);
         if (xIndex < 0) xIndex = 0;
         NSUInteger xBound = (NSUInteger)(((NSView *)self.documentView).bounds.size.width / self.bounds.size.width);
@@ -55,6 +49,7 @@
     }
     
     if (self.verticalPaging > 0.0) {
+        clingOrigin.y = round(origin.y / self.verticalPaging) * self.verticalPaging;
         yIndex = (NSInteger)(clingOrigin.y / self.verticalPaging);
         if (yIndex < 0) yIndex = 0;
         NSUInteger yBound = (NSUInteger)(((NSView *)self.documentView).bounds.size.height / self.bounds.size.height);
@@ -69,52 +64,27 @@
     
     if (origin.x != clingOrigin.x || origin.y != clingOrigin.y) {
         [NSAnimationContext beginGrouping];
-        [[NSAnimationContext currentContext] setDuration:0.5];
-        [[NSAnimationContext currentContext] setCompletionHandler:^{
-            self.willRunOrIsRunningResetAnimation = false;
-            self.canRunResetAnimation = false;
-        }];
+        CGFloat animationTime = sqrt(pow(origin.x - clingOrigin.x, 2) / pow(self.bounds.size.width, 2) +
+                                     pow(origin.y - clingOrigin.y, 2) / pow(self.bounds.size.height, 2));
+        if (animationTime > 0.5) animationTime = 0.5;
+        [[NSAnimationContext currentContext] setDuration:animationTime];
         [[self.contentView animator] setBoundsOrigin:clingOrigin];
         [NSAnimationContext endGrouping];
-    } else {
-        self.canRunResetAnimation = false;
     }
 }
 
 - (void)contentBoundChanged {
-    if (self.willRunOrIsRunningResetAnimation && self.canRunResetAnimation) {
-        self.lastBoundChangeNotificationNo ++;
-        NSUInteger currentNotificationNo = self.lastBoundChangeNotificationNo;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if (currentNotificationNo == self.lastBoundChangeNotificationNo) {
-                [self scrollViewDidScroll];
-            }
-        });
-    }
-}
-
-- (void)touchesBeganWithEvent:(NSEvent *)event {
-    if (event.type == NSEventTypeGesture && !self.willRunOrIsRunningResetAnimation) {
-        NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:self];
-        if (touches.count == 2) {
-            self.willRunOrIsRunningResetAnimation = true;
-        }
-    }
-}
-
-- (void)touchesEndedWithEvent:(NSEvent *)event {
-    if (event.type == NSEventTypeGesture && self.willRunOrIsRunningResetAnimation) {
-        NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:self];
-        if (touches.count == 2) {
-            self.canRunResetAnimation = true;
+    self.lastBoundChangeNotificationNo ++;
+    NSUInteger currentNotificationNo = self.lastBoundChangeNotificationNo;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (currentNotificationNo == self.lastBoundChangeNotificationNo) {
+            /* bounds haven't been changed within 0.05 seconds
+             (suggests that bounds animation has come to a stop)
+               reset bounds if it stops at an improper location */
             self.lastBoundChangeNotificationNo = 0;
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (self.lastBoundChangeNotificationNo == 0) {
-                    [self scrollViewDidScroll];
-                }
-            });
+            [self scrollViewClingToPage];
         }
-    }
+    });
 }
 
 - (void)setXPage:(NSUInteger)xPage yPage:(NSUInteger)yPage {
