@@ -88,15 +88,11 @@
 - (void)checkNewNotification {
     UNAVAILABLE_ON_SPY
     NSDate *notificationTimestamp = self.userSelf[@"notificationTimestamp"];
-    if (!notificationTimestamp) notificationTimestamp = [NSDate distantPast];
-    NSDate *messageTimestamp = self.userSelf[@"messageTimestamp"];
-    if (!messageTimestamp) messageTimestamp = [NSDate distantPast];
-    NSDate *fetchingFrom = notificationTimestamp;
-    if ([messageTimestamp timeIntervalSinceDate:notificationTimestamp] > 0) fetchingFrom = messageTimestamp;
     
     PFQuery *query = [PFQuery queryWithClassName:@"Message"];
     [query whereKey:@"userId" equalTo:self.userPartner.objectId];
-    [query whereKey:@"postAt" greaterThan:fetchingFrom];
+    if (notificationTimestamp) [query whereKey:@"postAt" greaterThan:notificationTimestamp];
+    
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
             NSUInteger count = [objects count];
@@ -369,19 +365,14 @@
     
     /* commit a user active token */
     /* (no commitment if the previous token is within 15 minutes) */
-    BOOL needsCommmitNewToken = true;
-    if (self.activeTokens) {
-        PFObject *lastToken = [self.activeTokens lastObject];
-        if (lastToken && [[NSDate date] timeIntervalSinceDate:lastToken.createdAt] <= 900) {
-            needsCommmitNewToken = false;
-        }
-    }
-    if (needsCommmitNewToken) {
+    NSDate *notificationTimestamp = self.userSelf[@"notificationTimestamp"];
+    if (!notificationTimestamp || [[NSDate date] timeIntervalSinceDate:notificationTimestamp] > 900) {
         PFObject *token = [PFObject objectWithClassName:@"ActiveToken"];
         token[@"userId"] = self.userSelf.objectId;
         token[@"type"] = @"Active";
         [token saveInBackground];
     }
+    self.userSelf[@"notificationTimestamp"] = [NSDate date];
         
     /* set new notification as false */
     self.hasNewNotification = false;

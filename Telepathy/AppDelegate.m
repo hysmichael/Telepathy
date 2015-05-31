@@ -110,7 +110,7 @@ void *kContextActivePanel = &kContextActivePanel;
 }
 
 - (void) registerRecurrentEvents {
-    if (self.recurrentTimer) [self.recurrentTimer invalidate];
+    if (self.recurrentTimer && self.recurrentTimer.valid) return;
     if ([PFUser currentUser]) {
         NSTimeInterval interval = 900;  // 15 minutes
         NSDate *fireDate = [NSDate dateWithTimeIntervalSinceNow:interval];
