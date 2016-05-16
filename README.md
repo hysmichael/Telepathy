@@ -6,4 +6,6 @@ __Telepathy__ is an OS X status-bar application that provides couples (friends) 
 __Version__ 1.5.1 (Build 3). Unpublished.
 
 ### UI Interface
-<img src="/contents/Actual-View3.png" width="668">
+The following is an actual screen shot of the app:
+
+<img src="/contents/Actual-View3.png" width="400">
