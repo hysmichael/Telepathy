@@ -112,7 +112,7 @@ void *kContextActivePanel = &kContextActivePanel;
 - (void) registerRecurrentEvents {
     if (self.recurrentTimer && self.recurrentTimer.valid) return;
     if ([PFUser currentUser]) {
-        NSTimeInterval interval = 900;  // 15 minutes
+        NSTimeInterval interval = 180;  // 3 minutes
         NSDate *fireDate = [NSDate dateWithTimeIntervalSinceNow:interval];
         self.recurrentTimer = [[NSTimer alloc] initWithFireDate:fireDate interval:interval
                                                          target:[DataManager sharedManager] selector:@selector(checkNewNotification)

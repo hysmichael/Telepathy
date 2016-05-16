@@ -1,10 +1,13 @@
 PODS:
-  - CZWeatherKit (1.0.0)
+  - CZWeatherKit (2.2.6):
+    - PINCache (~> 2.1)
+  - PINCache (2.2.2)
 
 DEPENDENCIES:
   - CZWeatherKit
 
 SPEC CHECKSUMS:
-  CZWeatherKit: 178157f722d93e68169699bde6d5d9b372aa23d3
+  CZWeatherKit: 6da12bc33881dd9dd5cfe405bca82ce0fb1e739b
+  PINCache: 078426d356ab95ef875e9e62e5c35a2ea3333c28
 
-COCOAPODS: 0.36.0
+COCOAPODS: 0.39.0

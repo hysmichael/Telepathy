@@ -143,9 +143,15 @@
         [[DataManager sharedManager] setEIndex:eIndex callback:^(BOOL success) {
             [self commandExecuted:success];
         }];
-        NSString *message = [NSString stringWithFormat:@"Emotion Index -> %ld", (long)eIndex];
+        
+        NSMutableArray *mood_char_arr = [[NSMutableArray alloc] initWithObjects:@"[", nil];
+        for (int i = 0; i < eIndex; i++) [mood_char_arr addObject:@"♥"];
+        for (int i = (int)eIndex; i < 5; i++) [mood_char_arr addObject:@"_"];
+        [mood_char_arr addObject:@"]"];
+        
+        NSString *message = [mood_char_arr componentsJoinedByString:@""];
         if (args && [args length] > 0) {
-            message = [NSString stringWithFormat:@"(Emotion Index -> %ld) %@", (long)eIndex, args];
+            message = [NSString stringWithFormat:@"%@ %@", message, args];
         }
         [[DataManager sharedManager] sendMessage:message callback:nil];
         

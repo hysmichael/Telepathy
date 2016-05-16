@@ -22,7 +22,7 @@
     self = [super init];
     if (self) {
         self.eventStore = [[EKEventStore alloc] init];
-        [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:nil];
+        [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError * _Nullable error) {}];
         self.activeTokensNotificationDelegates = [[NSMutableSet alloc] init];
     }
     return self;
@@ -267,45 +267,56 @@
     self.userSelf[@"messageTimestamp"] = [NSDate date];
 }
 
+- (void) __syncSelfCalenderEventsWithinDays:(NSUInteger)numOfDays {
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    
+    NSDate *startDate = [NSDate date];
+    NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+    dateComponents.day = numOfDays;
+    NSDate *endDate = [calendar dateByAddingComponents:dateComponents
+                                                toDate:startDate
+                                               options:0];
+    NSPredicate *predicate = [self.eventStore predicateForEventsWithStartDate:startDate
+                                                                      endDate:endDate
+                                                                    calendars:nil];
+    NSArray *events = [self.eventStore eventsMatchingPredicate:predicate];
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"CalenderEvent"];
+    [query whereKey:@"userId" equalTo:self.userSelf.objectId];
+    [query whereKey:@"endDate" greaterThanOrEqualTo:startDate];
+    [query whereKey:@"startDate" lessThanOrEqualTo:endDate];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            NSMutableSet *eventsOnServer = [[NSMutableSet alloc] init];
+            for (PFObject *object in objects) [eventsOnServer addObject:object[@"eventId"]];
+            NSMutableArray *eventObjects = [[NSMutableArray alloc] init];
+            for (EKEvent *event in events) {
+                if (![eventsOnServer containsObject:event.eventIdentifier]) {
+                    PFObject *eventObject = [PFObject objectWithClassName:@"CalenderEvent"];
+                    eventObject[@"eventId"]     = event.eventIdentifier;
+                    eventObject[@"startDate"]   = event.startDate;
+                    eventObject[@"endDate"]     = event.endDate;
+                    eventObject[@"allDay"]      = @(event.allDay);
+                    eventObject[@"userId"]      = self.userSelf.objectId;
+                    if (event.title)    eventObject[@"title"]    = event.title;
+                    if (event.location) eventObject[@"location"] = event.location;
+                    [eventObjects addObject:eventObject];
+                }
+            }
+            [PFObject saveAllInBackground:eventObjects];
+        }
+    }];
+}
+
 - (void) syncSelfCalenderEventsWithinDays:(NSUInteger)numOfDays {
     UNAVAILABLE_ON_SPY
-    if ([EKEventStore authorizationStatusForEntityType:EKEntityMaskEvent] == EKAuthorizationStatusAuthorized) {
-        NSCalendar *calendar = [NSCalendar currentCalendar];
-
-        NSDate *startDate = [NSDate date];
-        NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
-        dateComponents.day = numOfDays;
-        NSDate *endDate = [calendar dateByAddingComponents:dateComponents
-                                                    toDate:startDate
-                                                   options:0];
-        NSPredicate *predicate = [self.eventStore predicateForEventsWithStartDate:startDate
-                                                                          endDate:endDate
-                                                                        calendars:nil];
-        NSArray *events = [self.eventStore eventsMatchingPredicate:predicate];
-        
-        PFQuery *query = [PFQuery queryWithClassName:@"CalenderEvent"];
-        [query whereKey:@"userId" equalTo:self.userSelf.objectId];
-        [query whereKey:@"endDate" greaterThanOrEqualTo:startDate];
-        [query whereKey:@"startDate" lessThanOrEqualTo:endDate];
-        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            if (!error) {
-                NSMutableSet *eventsOnServer = [[NSMutableSet alloc] init];
-                for (PFObject *object in objects) [eventsOnServer addObject:object[@"eventId"]];
-                NSMutableArray *eventObjects = [[NSMutableArray alloc] init];
-                for (EKEvent *event in events) {
-                    if (![eventsOnServer containsObject:event.eventIdentifier]) {
-                        PFObject *eventObject = [PFObject objectWithClassName:@"CalenderEvent"];
-                        eventObject[@"eventId"]     = event.eventIdentifier;
-                        eventObject[@"startDate"]   = event.startDate;
-                        eventObject[@"endDate"]     = event.endDate;
-                        eventObject[@"allDay"]      = @(event.allDay);
-                        eventObject[@"userId"]      = self.userSelf.objectId;
-                        if (event.title)    eventObject[@"title"]    = event.title;
-                        if (event.location) eventObject[@"location"] = event.location;
-                        [eventObjects addObject:eventObject];
-                    }
-                }
-                [PFObject saveAllInBackground:eventObjects];
+    if ([EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent] == EKAuthorizationStatusAuthorized) {
+        [self __syncSelfCalenderEventsWithinDays:numOfDays];
+    } else {
+        /* reissue the permission request */
+        [self.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError * _Nullable error) {
+            if (granted) {
+                [self __syncSelfCalenderEventsWithinDays:numOfDays];
             }
         }];
     }
@@ -355,8 +366,14 @@
     }];
 }
 
+
+/* commit user state when panel is closed */
 - (void)commitUserState {
-    /* do not commit user state in replacement of partner */
+    /* check if user has logged in */
+//    if (!self.userSelf) return;
+    
+    /* during spy mode, when panel is closed, the spy session is terminated
+       do not commit user state in replacement of partner */
     if (self.onSpy) {
         [self setOnSpy:false];
         self.activeTokens = nil;

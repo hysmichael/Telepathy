@@ -96,13 +96,13 @@
         NSDate *timeStamp = [[DataManager sharedManager] userSelf][@"weatherTimestamp"];
         if (timeStamp && [[NSDate date] timeIntervalSinceDate:timeStamp] < 60) return;
     }
-    CZWeatherRequest *request = [CZWeatherRequest requestWithType:CZCurrentConditionsRequestType];
-    request.location = [CZWeatherLocation locationWithCLLocation:partnerLocation];
-    request.service = [CZWundergroundService serviceWithKey:kWeatherServiceKey];
-    [request performRequestWithHandler:^(id data, NSError *error) {
+    CZWundergroundRequest *request = [CZWundergroundRequest newConditionsRequest];
+    request.location = [CZWeatherLocation locationFromCoordinate:partnerLocation.coordinate];
+    request.key = kWeatherServiceKey;
+    [request sendWithCompletion:^(CZWeatherData *data, NSError *error) {
         if (data) {
-            CZWeatherCondition *current = (CZWeatherCondition *)data;
-            self.view.weatherIconLabel.stringValue = [NSString stringWithFormat:@"%c", current.climaconCharacter];
+            CZWeatherCurrentCondition *current = data.current;
+            self.view.weatherIconLabel.stringValue = [NSString stringWithFormat:@"%c", current.climacon];
             rawTemperatureStr = [NSString stringWithFormat:@" %.0f°", current.temperature.c];
             [self updateCityTemperatureLabel];
             weatherRequested = true;
